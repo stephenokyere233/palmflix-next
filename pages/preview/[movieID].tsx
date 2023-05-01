@@ -35,9 +35,8 @@ const MoviePreview: React.FC<any> = () => {
             }
         });
 
-        console.log("merged", merged)
+        // console.log("merged", merged)
         setMovieInfo(merged)
-        return merged;
     }
 
     const fetchMovieData = async (movieID: string) => {
@@ -63,9 +62,6 @@ const MoviePreview: React.FC<any> = () => {
             if (!movieCastRes.ok && !tvCastRes.ok) {
                 throw new Error('Failed to fetch movie Cast and TV Cast');
             }
-
-
-
 
             const [movieData, tvData, movieCast, tvCast] = await Promise.all([
                 movieDataRes.json(),
@@ -106,7 +102,6 @@ const MoviePreview: React.FC<any> = () => {
         axios.get(api_url)
             .then((response) => {
                 setSimilarMovies(response.data.results);
-                console.log("similar", response.data.results)
             })
             .catch((error) => {
                 console.error(error);
@@ -347,10 +342,7 @@ const MoviePreview: React.FC<any> = () => {
                                     )
                                 })
                             }
-
                         </div>
-
-
                     </div>
                 </section>
             </div>

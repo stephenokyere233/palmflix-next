@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { AppContext } from '@/context';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,7 +8,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const ImageSlider: FC<{ images: string[], autoSlideDuration: number, data?: any }> = ({ images, autoSlideDuration, data }) => {
     const [index, setIndex] = useState(0);
-    const { setSelectedMovieID, selectedMovieID } = useContext(AppContext)
+    const { setSelectedMovieID } = useContext(AppContext)
     const router = useRouter()
 
     const handlePrevClick = () => {
