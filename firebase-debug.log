@@ -1,71 +1,28 @@
-[debug] [2023-05-01T17:55:03.200Z] ----------------------------------------------------------------------
-[debug] [2023-05-01T17:55:03.202Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting
-[debug] [2023-05-01T17:55:03.203Z] CLI Version:   11.24.1
-[debug] [2023-05-01T17:55:03.203Z] Platform:      linux
-[debug] [2023-05-01T17:55:03.204Z] Node Version:  v18.0.0
-[debug] [2023-05-01T17:55:03.204Z] Time:          Mon May 01 2023 17:55:03 GMT+0000 (Greenwich Mean Time)
-[debug] [2023-05-01T17:55:03.204Z] ----------------------------------------------------------------------
+[debug] [2023-05-01T18:48:25.985Z] ----------------------------------------------------------------------
+[debug] [2023-05-01T18:48:25.987Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting
+[debug] [2023-05-01T18:48:25.988Z] CLI Version:   11.24.1
+[debug] [2023-05-01T18:48:25.988Z] Platform:      linux
+[debug] [2023-05-01T18:48:25.988Z] Node Version:  v18.0.0
+[debug] [2023-05-01T18:48:25.988Z] Time:          Mon May 01 2023 18:48:25 GMT+0000 (Greenwich Mean Time)
+[debug] [2023-05-01T18:48:25.988Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2023-05-01T17:55:03.303Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2023-05-01T17:55:03.304Z] > authorizing via signed-in user (thuqpalmer@gmail.com)
-[debug] [2023-05-01T17:55:03.304Z] [iam] checking project palmflix-ce055 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
-[debug] [2023-05-01T17:55:03.306Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions [none]
-[debug] [2023-05-01T17:55:03.307Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions x-goog-quota-user=projects/palmflix-ce055
-[debug] [2023-05-01T17:55:03.307Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
-[debug] [2023-05-01T17:55:06.705Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions 200
-[debug] [2023-05-01T17:55:06.705Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
-[debug] [2023-05-01T17:55:06.707Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 [none]
-[debug] [2023-05-01T17:55:07.395Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 200
-[debug] [2023-05-01T17:55:07.396Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 {"projectId":"palmflix-ce055","projectNumber":"204482909712","displayName":"palmflix","name":"projects/palmflix-ce055","resources":{"hostingSite":"palmflix-ce055","storageBucket":"palmflix-ce055.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_e25dc31e-c971-4a05-b7a0-b9ff70cf7bd6"}
-[debug] [2023-05-01T17:55:10.015Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites pageToken=&pageSize=10
-[debug] [2023-05-01T17:55:13.659Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 200
-[debug] [2023-05-01T17:55:13.660Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites {"sites":[{"name":"projects/palmflix-ce055/sites/palmflix-ce055","defaultUrl":"https://palmflix-ce055.web.app","type":"DEFAULT_SITE"}]}
-[debug] [2023-05-01T17:55:13.663Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 
-[debug] [2023-05-01T17:55:14.986Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 200
-[debug] [2023-05-01T17:55:14.986Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites {"sites":[{"name":"projects/palmflix-ce055/sites/palmflix-ce055","defaultUrl":"https://palmflix-ce055.web.app","type":"DEFAULT_SITE"}]}
-[debug] [2023-05-01T17:55:14.986Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config [none]
-[debug] [2023-05-01T17:55:16.314Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config 200
-[debug] [2023-05-01T17:55:16.315Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config {"projectId":"palmflix-ce055","appId":"1:204482909712:web:7cf44d357ebabbfad29c95","storageBucket":"palmflix-ce055.appspot.com","locationId":"us-central","apiKey":"AIzaSyBzwbqGNQs8UkLlyj4X10sEqvtkd8F6TTA","authDomain":"palmflix-ce055.firebaseapp.com","messagingSenderId":"204482909712","measurementId":"G-XM8SNXXWMF"}
-[debug] [2023-05-01T17:55:48.371Z] Error: Export encountered errors on following paths:
-	/search
-    at /home/stevejs/projects/palmflix-next/node_modules/next/dist/export/index.js:608:19
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Span.traceAsyncFn (/home/stevejs/projects/palmflix-next/node_modules/next/dist/trace/trace.js:97:20)
-    at async /home/stevejs/projects/palmflix-next/node_modules/next/dist/build/index.js:1440:21
-    at async Span.traceAsyncFn (/home/stevejs/projects/palmflix-next/node_modules/next/dist/trace/trace.js:97:20)
-    at async /home/stevejs/projects/palmflix-next/node_modules/next/dist/build/index.js:1298:17
-    at async Span.traceAsyncFn (/home/stevejs/projects/palmflix-next/node_modules/next/dist/trace/trace.js:97:20)
-    at async build (/home/stevejs/projects/palmflix-next/node_modules/next/dist/build/index.js:143:29)
-    at async build (/usr/local/lib/node_modules/firebase-tools/lib/frameworks/next/index.js:55:5)
-    at async prepareFrameworks (/usr/local/lib/node_modules/firebase-tools/lib/frameworks/index.js:261:108)
-    at async deploy (/usr/local/lib/node_modules/firebase-tools/lib/deploy/index.js:53:13)
-[error] 
-[error] Error: An unexpected error has occurred.
-[debug] [2023-05-01T18:12:52.086Z] ----------------------------------------------------------------------
-[debug] [2023-05-01T18:12:52.088Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
-[debug] [2023-05-01T18:12:52.089Z] CLI Version:   11.24.1
-[debug] [2023-05-01T18:12:52.089Z] Platform:      linux
-[debug] [2023-05-01T18:12:52.089Z] Node Version:  v18.0.0
-[debug] [2023-05-01T18:12:52.095Z] Time:          Mon May 01 2023 18:12:52 GMT+0000 (Greenwich Mean Time)
-[debug] [2023-05-01T18:12:52.096Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2023-05-01T18:12:52.177Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2023-05-01T18:12:52.178Z] > authorizing via signed-in user (thuqpalmer@gmail.com)
-[debug] [2023-05-01T18:12:52.178Z] [iam] checking project palmflix-ce055 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
-[debug] [2023-05-01T18:12:52.180Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions [none]
-[debug] [2023-05-01T18:12:52.180Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions x-goog-quota-user=projects/palmflix-ce055
-[debug] [2023-05-01T18:12:52.180Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
-[debug] [2023-05-01T18:12:55.714Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions 200
-[debug] [2023-05-01T18:12:55.715Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
-[debug] [2023-05-01T18:12:55.719Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 [none]
-[debug] [2023-05-01T18:12:58.672Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 200
-[debug] [2023-05-01T18:12:58.673Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 {"projectId":"palmflix-ce055","projectNumber":"204482909712","displayName":"palmflix","name":"projects/palmflix-ce055","resources":{"hostingSite":"palmflix-ce055","storageBucket":"palmflix-ce055.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_e25dc31e-c971-4a05-b7a0-b9ff70cf7bd6"}
-[debug] [2023-05-01T18:13:01.376Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites pageToken=&pageSize=10
-[debug] [2023-05-01T18:13:05.010Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 200
-[debug] [2023-05-01T18:13:05.010Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites {"sites":[{"name":"projects/palmflix-ce055/sites/palmflix-ce055","defaultUrl":"https://palmflix-ce055.web.app","type":"DEFAULT_SITE"}]}
-[debug] [2023-05-01T18:13:05.011Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 
-[debug] [2023-05-01T18:13:06.444Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 200
-[debug] [2023-05-01T18:13:06.444Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites {"sites":[{"name":"projects/palmflix-ce055/sites/palmflix-ce055","defaultUrl":"https://palmflix-ce055.web.app","type":"DEFAULT_SITE"}]}
-[debug] [2023-05-01T18:13:06.445Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config [none]
-[debug] [2023-05-01T18:13:07.673Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config 200
-[debug] [2023-05-01T18:13:07.674Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config {"projectId":"palmflix-ce055","appId":"1:204482909712:web:7cf44d357ebabbfad29c95","storageBucket":"palmflix-ce055.appspot.com","locationId":"us-central","apiKey":"AIzaSyBzwbqGNQs8UkLlyj4X10sEqvtkd8F6TTA","authDomain":"palmflix-ce055.firebaseapp.com","messagingSenderId":"204482909712","measurementId":"G-XM8SNXXWMF"}
+[debug] [2023-05-01T18:48:26.076Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-05-01T18:48:26.076Z] > authorizing via signed-in user (thuqpalmer@gmail.com)
+[debug] [2023-05-01T18:48:26.076Z] [iam] checking project palmflix-ce055 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-05-01T18:48:26.081Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions [none]
+[debug] [2023-05-01T18:48:26.081Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions x-goog-quota-user=projects/palmflix-ce055
+[debug] [2023-05-01T18:48:26.082Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-05-01T18:48:29.733Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions 200
+[debug] [2023-05-01T18:48:29.735Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/palmflix-ce055:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-05-01T18:48:29.742Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 [none]
+[debug] [2023-05-01T18:48:32.975Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 200
+[debug] [2023-05-01T18:48:32.975Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055 {"projectId":"palmflix-ce055","projectNumber":"204482909712","displayName":"palmflix","name":"projects/palmflix-ce055","resources":{"hostingSite":"palmflix-ce055","storageBucket":"palmflix-ce055.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_e25dc31e-c971-4a05-b7a0-b9ff70cf7bd6"}
+[debug] [2023-05-01T18:48:37.173Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites pageToken=&pageSize=10
+[debug] [2023-05-01T18:48:40.693Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 200
+[debug] [2023-05-01T18:48:40.695Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites {"sites":[{"name":"projects/palmflix-ce055/sites/palmflix-ce055","defaultUrl":"https://palmflix-ce055.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2023-05-01T18:48:40.697Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 
+[debug] [2023-05-01T18:48:41.985Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites 200
+[debug] [2023-05-01T18:48:41.985Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/palmflix-ce055/sites {"sites":[{"name":"projects/palmflix-ce055/sites/palmflix-ce055","defaultUrl":"https://palmflix-ce055.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2023-05-01T18:48:41.986Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config [none]
+[debug] [2023-05-01T18:48:43.332Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config 200
+[debug] [2023-05-01T18:48:43.333Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/palmflix-ce055/webApps/-/config {"projectId":"palmflix-ce055","appId":"1:204482909712:web:7cf44d357ebabbfad29c95","storageBucket":"palmflix-ce055.appspot.com","locationId":"us-central","apiKey":"AIzaSyBzwbqGNQs8UkLlyj4X10sEqvtkd8F6TTA","authDomain":"palmflix-ce055.firebaseapp.com","messagingSenderId":"204482909712","measurementId":"G-XM8SNXXWMF"}
