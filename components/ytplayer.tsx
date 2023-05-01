@@ -1,58 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { BiX } from 'react-icons/bi';
 
 interface Props {
     videoId: string;
     onClose: () => void;
 }
 
-const YouTubePlayer: React.FC<Props> = ({ videoId, onClose }) => {
-    const [player, setPlayer] = useState<any>(null);
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+const YouTubePlayer: React.FC<Props> = ({videoId,onClose}) => {
 
-    useEffect(() => {
-        const script = document.createElement('script');
-        script.src = 'https://www.youtube.com/iframe_api';
-        document.body.appendChild(script);
-
-        window.onYouTubeIframeAPIReady = () => {
-            const player = new window.YT.Player('player', {
-                videoId,
-                playerVars: {
-                    autoplay: 1,
-                    modestbranding: 1,
-                    rel: 0,
-                    showinfo: 0,
-                },
-                events: {
-                    onReady: () => {
-                        setPlayer(player);
-                    },
-                    onStateChange: (event: any) => {
-                        if (event.data === window.YT.PlayerState.PLAYING) {
-                            setIsPlaying(true);
-                        } else if (event.data === window.YT.PlayerState.ENDED) {
-                            setIsPlaying(false);
-                            onClose();
-                        }
-                    },
-                },
-            });
-        };
-    }, [videoId, onClose]);
-
-    const handleStop = () => {
-        if (player) {
-            player.stopVideo();
-            onClose();
-        }
+    const handleContainerClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        console.log("signal to close");
+        onClose()
     };
-
+   
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000 }}>
-            <div id="player" style={{ width: '80%', height: '80%' }}></div>
-            <button onClick={handleStop} style={{ position: 'absolute', top: 10, right: 10 }}>
-                {isPlaying ? 'Close' : 'Close (Video Ended)'}
-            </button>
+        <div style={{ background: "rgba(169, 169, 169, 0.3)" }} className='overflow-hidden bg-red-300 absolute inset-0 w-full z-[30] h-screen flex justify-center items-center' onClick={handleContainerClick}>
+            <BiX size={32} onClick={onClose} className='absolute right-10 top-6'/>
+            <div className=' w-[80%] h-[90%] rounded-lg'>
+                <iframe className='w-full h-full object-cover rounded-lg' width="560" height="315" src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+
+            </div>
         </div>
     );
 };

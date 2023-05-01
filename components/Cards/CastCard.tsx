@@ -13,7 +13,7 @@ type castProps = {
 const CastCard: React.FC<castProps> = ({ name, profile, id, character }) => {
 
     return (
-        <div className='border p-2' >
+        <div style={{ background: "rgba(169, 169, 169, 0.2)" }} className='max-w-[350px] rounded-md  p-2 cursor-pointer ' >
             <Image src={img_path + profile} alt={name} height={200} width={200} className='object-cover h-[300px] w-[250px]' />
             <p>{name}</p>
             <p>As {character}</p>

@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import CastCard from '@/components/Cards/CastCard';
+import MovieCard from '@/components/Cards/MovieCard';
 import Loader from '@/components/loader/Loader';
+import YouTubePlayer from '@/components/ytplayer';
 import { firebaseAuth, firestoreDB } from '@/config/firebase.config';
 import { img_path } from '@/constants/endpoints';
 import { AppContext } from '@/context';
@@ -24,7 +26,8 @@ const MoviePreview: React.FC<any> = () => {
     const router = useRouter()
     const { setSelectedMovieID, selectedMovieID, setShowLoginModal, savedMovieIDS, setSavedMovieIDS } = useContext(AppContext)
     const [trailers, setTrailers] = useState<any>([])
-
+    const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
+    const [showAllCasts, setShowAllCasts] = useState<number>(8)
 
     function mergeObjects(obj1: any, obj2: any) {
         const merged = { ...obj1, ...obj2 };
@@ -98,6 +101,24 @@ const MoviePreview: React.FC<any> = () => {
         }
     };
 
+    const [similarMovies, setSimilarMovies] = useState<any[]>([]);
+
+    const fetchSimilarMovies = (movieID: string) => {
+        const api_url = `https://api.themoviedb.org/3/movie/${movieID}/similar?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
+        axios.get(api_url)
+            .then((response) => {
+                setSimilarMovies(response.data.results);
+                console.log("similar", response.data.results)
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    useEffect(() => {
+        fetchSimilarMovies(selectedMovieID)
+    }, [selectedMovieID]);
+
     useEffect(() => {
         const selectedID = localStorage.getItem("selectedMovieID")
         const savedMovies = localStorage.getItem("savedMovies")
@@ -130,9 +151,13 @@ const MoviePreview: React.FC<any> = () => {
         const endpoint = `${api_url}/${dataType}/${movieID}/videos?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`;
         try {
             const response = await axios.get(endpoint);
-            // setLoading(false)
-            console.log(response.data.results)
-            setTrailers(response.data.results)
+            const filteredTrailers = response.data.results.filter(
+                (trailer: any) =>
+                    trailer.type === 'Trailer' || trailer.name.includes('Official' || "official")
+            );
+            setShowPlayer(true)
+            console.log(filteredTrailers)
+            setTrailers(filteredTrailers);
 
         } catch (error) {
             console.error(error);
@@ -156,18 +181,22 @@ const MoviePreview: React.FC<any> = () => {
                 console.error('Error parsing stored data:', error);
             }
         }
-    },[])
+    }, [])
 
 
     function handleRemoveButtonClick(movieID: string, collectionRef: CollectionReference<DocumentData>) {
+        const toastId = toast.loading("removing item...")
         removeWishListItem(movieID, collectionRef)
             .then((result) => {
-                console.log("result",result)
+                console.log("result", result)
+                toast.dismiss(toastId)
                 console.log('Item removed successfully');
                 toast.success("Item removed successfully")
+
             })
             .catch((error) => {
                 console.error('Error removing item:', error);
+                toast.dismiss(toastId)
                 toast.error('Error removing item:', error)
             });
     }
@@ -175,7 +204,6 @@ const MoviePreview: React.FC<any> = () => {
     const addToBookmark = async () => {
         let savedArray = [...savedMovieIDS]
         if (!firebaseAuth.currentUser?.uid) {
-            console.log("login to save a movie")
             toast.error("Login to save a movie")
             setShowLoginModal(true)
         }
@@ -238,6 +266,7 @@ const MoviePreview: React.FC<any> = () => {
     return (
 
         movieInfo && <>
+            {showPlayer && <YouTubePlayer videoId={trailers[0].key} onClose={() => setShowPlayer(false)} />}
             <div className='w-[90rem] bg-[#040720] mb-10 p-4 mx-auto '>
 
                 <header className="h-[500px] rounded-md  w-full bg-cover bg-no-repeat relative" style={{
@@ -265,7 +294,7 @@ const MoviePreview: React.FC<any> = () => {
                     </div>
 
                     {
-                      savedMovieIDS?.includes(movieInfo.id) ?
+                        savedMovieIDS?.includes(movieInfo.id) ?
                             <div className='flex gap-3 cursor-pointer text-green-400 ' onClick={addToBookmark}>
                                 <p>Saved</p><BiBookmark size={24} />
                             </div> : <div className='flex gap-3 cursor-pointer' onClick={addToBookmark}>
@@ -283,17 +312,48 @@ const MoviePreview: React.FC<any> = () => {
 
                 <section className=''>
                     <h2 className='text-center text-brand text-2xl font-semibold'>Movie Casts</h2>
-                    <div className='grid grid-cols-4 place-items-center py-6 gap-4'>
-                        {
-                            movieCastInfo && movieCastInfo.cast?.map((cast: { name: any; profile_path: any; id: any; character: any; }) => {
-                                const { name, profile_path, id, character } = cast
+                    <div className=''>
+                        <div className='grid grid-cols-4 place-items-center  py-6 gap-4'>
+                            {
+                                movieCastInfo && movieCastInfo.cast?.slice(0, showAllCasts).map((cast: { name: any; profile_path: any; id: any; character: any; }) => {
+                                    const { name, profile_path, id, character } = cast
 
-                                return (
-                                    <CastCard key={id} name={name} profile={profile_path} character={character} id={id} />
-                                )
+                                    return (
+                                        <CastCard key={id} name={name} profile={profile_path} character={character} id={id} />
+                                    )
 
-                            })
-                        }
+                                })
+                            }
+                        </div>
+                        <button className=' rounded-md  text-xl p-3 bg-[#ffffff12] w-full' onClick={() => {
+                            if (showAllCasts === 8) {
+                                setShowAllCasts(-1)
+                            }
+                            else {
+                                setShowAllCasts(8)
+
+                            }
+                        }}>
+                            {
+                                showAllCasts === 8 ? " See All Casts" : " See less Casts"
+                            }
+
+                        </button>
+                    </div>
+                    <div className=' mt-4'>
+                        <h2 className='text-center text-brand text-2xl font-semibold'> Recommended Movies For You</h2>
+                        <div className='grid grid-cols-4 place-items-center  py-6 gap-4'>
+                            {
+                                similarMovies.map((movie) => {
+                                    const { title, name, id, poster_path } = movie
+                                    return (
+                                        <MovieCard key={id} title={title || name} imageURL={poster_path} movieID={id} />
+                                    )
+                                })
+                            }
+
+                        </div>
+
 
                     </div>
                 </section>
