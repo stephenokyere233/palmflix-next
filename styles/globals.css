@@ -97,13 +97,7 @@ body::-webkit-scrollbar,
 .slider {
   opacity: 20%;
   animation: fade-out 4s infinite;
-  /* animation: slide-in-left 2s ease-in infinite; */
 }
-
-/* .fade-out {
-  opacity: 0;
-  animation: fade-out 0.5s ease-out;
-} */
 
 @keyframes fade-out {
   from {

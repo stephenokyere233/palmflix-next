@@ -1,14 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { AppContext } from '@/context'
-import Link from 'next/link'
 import React, { useContext } from 'react'
 import { FcGoogle } from "react-icons/fc"
-
 import { GoogleAuthProvider, UserCredential, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { firebaseAuth } from '@/config/firebase.config'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { onAuthenticationSuccess } from '@/services/auth.service'
-import { MdOutlineArrowBackIosNew } from "react-icons/md"
 import ModalLayout from '../layout/ModalLayout';
 import { BiX } from 'react-icons/bi';
 import { fetchBookmarks } from '@/services/bookmarks.service';
@@ -22,7 +20,7 @@ const LoginModal = () => {
     const [errorMessage, setErrorMessage] = React.useState<string>("")
     const [loading, setLoading] = React.useState<boolean>(false)
 
-    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setBookmarkedMovies, setSavedMovieIDS } = useContext(AppContext)
+    const { setShowSignupModal, setShowLoginModal, setBookmarkedMovies, setSavedMovieIDS } = useContext(AppContext)
 
     const getBookmarks = async () => {
         const { movieIDS_, savedMoviesData_ } = await fetchBookmarks();

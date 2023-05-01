@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import MovieCard from '@/components/Cards/MovieCard';
 import ImageSlider from '@/components/Slider/ImageSlider'
 import TrailerSlider from '@/components/Slider/TrailerSlider';
@@ -12,19 +13,13 @@ import axios from 'axios';
 import React, { useContext } from 'react'
 import { MdKeyboardArrowRight } from "react-icons/md"
 
-const Test = () => {
-
-    const { searchQuery, setSearchQuery, discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies,
-        tvShows, setTvShows, setSavedMovieIDS, setBookmarkedMovies } = useContext(AppContext)
-
-
+const Home = () => {
+    const { discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies, tvShows, setTvShows } = useContext(AppContext)
 
     const [topTrends, setTopTrends] = React.useState<any>([]);
     const [topTrendsImages, setTopTrendsImages] = React.useState<any>([]);
     const [loading, setLoading] = React.useState<boolean>(false)
     const [topTrendIDS, setTopTrendIDS] = React.useState<any>([]);
-    const [trailers, setTrailers] = React.useState<any>([]);
-  
 
     const getMovies = (url: string) => {
         const options = {
@@ -36,20 +31,16 @@ const Test = () => {
 
         axios.request(options).then(function (response) {
             if (url.includes(discover_movies)) {
-                // console.log("discover", response.data);
                 setDiscoverMovies(response.data.results)
             }
             else if (url.includes(trending_movies)) {
-                // console.log("trending", response.data);
                 setTrendingMovies(response.data.results)
             }
             else if (url.includes(tv_shows)) {
-                // console.log("tv", response.data);
                 setTvShows(response.data.results)
             }
             else if (url.includes(top_rated)) {
                 setTopRatedMovies(response.data.results)
-                // console.log("popular", response.data.results)
             }
             setLoading(false)
         }).catch(function (error) {
@@ -58,28 +49,7 @@ const Test = () => {
         });
     }
 
-    // const fetchTrailer = async (movieID: string) => {
-    //     setLoading(true)
-    //     const api_url = 'https://api.themoviedb.org/3';
-    //     const endpoint = `${api_url}movie/${movie_id}/videos?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`;
-    //     try {
-    //         const response = await fetch(endpoint);
-    //         const data = await response.json();
-    //         setLoading(false)
-
-
-    //     } catch (error) {
-    //         console.error(error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-
-    // }
-
-
-
     React.useEffect(() => {
-
         const fetchData = async () => {
             setLoading(true)
             try {
@@ -105,8 +75,8 @@ const Test = () => {
         getMovies(tv_shows)
         fetchData();
     }, []);
-    return (
 
+    return (
         <div>
             {loading ? (
                 <div className='w-screen h-screen flex justify-center items-center'>
@@ -133,4 +103,4 @@ const Test = () => {
     )
 }
 
-export default Test
+export default Home

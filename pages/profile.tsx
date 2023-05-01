@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useContext, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,7 +8,6 @@ import { AppContext } from "@/context";
 import { firebaseAuth } from "@/config/firebase.config";
 import { updateProfile } from "firebase/auth";
 import { toast } from "react-hot-toast";
-import YouTubePlayer from "@/components/ytplayer";
 
 const Profile = () => {
     const [updateForm, setUpdateForm] = React.useState<{ profile: string | null, name: string, email: string }>({
@@ -16,7 +16,7 @@ const Profile = () => {
         email: "",
     });
 
-    const { authenticatedUser, setAuthenticatedUser, showUserDropdown, setShowUserDropdown, setSavedMovieIDS, setBookmarkedMovies } = useContext(AppContext)
+    const { authenticatedUser } = useContext(AppContext)
 
     useEffect(() => {
         setUpdateForm((prev) => ({
@@ -38,8 +38,7 @@ const Profile = () => {
             [name]: value,
         }));
     };
-    // const { btn, sendNewProfileInfo } = useUpdateProfile()
-
+ 
     const updateUserData = () => {
         if (!firebaseAuth.currentUser) return
         updateProfile(firebaseAuth.currentUser, {
@@ -72,16 +71,6 @@ const Profile = () => {
     //     });
     // }, [userData]);
 
-    const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
-
-    const handlePlay = () => {
-        setShowPlayer(true);
-    };
-
-    const handleClose = () => {
-        setShowPlayer(false);
-    };
-
     const handleImageUpload = (event: any) => {
         const image = event.target.files[0];
         if (!image) return;
@@ -99,14 +88,7 @@ const Profile = () => {
 
     return (
         <section className="w-full flex items-center justify-center flex-1 h-[90vh]">
-{/*       
-            <div>
-                <button onClick={handlePlay}>Play Video</button>
-                {showPlayer && <YouTubePlayer videoId="itnqEauWQZM" onClose={handleClose} />}
-            </div> */}
-
             <div className="w-[500px] flex flex-col items-center p-4 px-8 rounded-md">
-
                 <Link
                     href={""}
                     className="hidden w-full items-center md:flex"

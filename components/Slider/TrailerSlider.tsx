@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import React, { FC, useEffect, useRef, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { FC, useEffect, useRef, useState } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp } from "react-icons/fa"
 
@@ -43,7 +43,6 @@ const TrailerSlider: FC<{ images: any[], autoSlideDuration: number, data?: any }
     };
 
     useEffect(() => {
-
         const video = videoRef.current;
         if (video) {
             video.autoplay = true;
@@ -74,42 +73,6 @@ const TrailerSlider: FC<{ images: any[], autoSlideDuration: number, data?: any }
 
     }, []);
  
-    useEffect(() => {
-        // const video = videoRef.current;
-
-        // // Set autoplay and muted attributes to ensure the video plays automatically and without sound
-        // if (video) {
-        //     video.autoplay = true;
-        // }
-
-        // Pause the video if it goes out of the viewport
-        // const handleScroll = () => {
-        //     const rect = video?.getBoundingClientRect();
-        //     const viewHeight = Math.max(
-        //         document.documentElement.clientHeight,
-        //         window.innerHeight
-        //     );
-        //     if (rect?.bottom! < 0 || rect?.top! - viewHeight >= 0) {
-        //         video?.pause();
-        //     } else {
-        //         video?.play();
-        //     }
-        // };
-
-        // window.addEventListener("load", () => {
-        //     if (video) {
-        //         video.play();
-        //         window.addEventListener("scroll", handleScroll);
-        //     }
-        // });
-
-        // return () => {
-        //     window.removeEventListener("scroll", handleScroll);
-        // };
-    }, []);
-
-
-
 
     // const autoIncrement = () => {
     //     const newIndex = index === images.length - 1 ? 0 : index + 1;

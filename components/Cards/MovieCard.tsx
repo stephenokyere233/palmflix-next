@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { firebaseAuth, firestoreDB } from '@/config/firebase.config'
 import { setDoc, doc, CollectionReference, DocumentData, collection } from 'firebase/firestore'
 import toast from 'react-hot-toast'
-import { removeWishListItem } from '@/services/bookmarks.service'
+import { removeBookmark } from '@/services/bookmarks.service'
 
 type movieProps = {
     title: string,
@@ -18,7 +18,7 @@ type movieProps = {
 
 
 const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
-    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, showUserDropdown, setShowUserDropdown, setSelectedMovieID, bookmarkedMovies, setBookmarkedMovies, setSavedMovieIDS, savedMovieIDS } = useContext(AppContext)
+    const { setShowLoginModal, setSelectedMovieID, setSavedMovieIDS, savedMovieIDS } = useContext(AppContext)
 
 
     const router = useRouter()
@@ -30,7 +30,7 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
 
     function handleRemoveButtonClick(movieID: string, collectionRef: CollectionReference<DocumentData>) {
         const toastId = toast.loading("removing item...")
-        removeWishListItem(movieID, collectionRef)
+        removeBookmark(movieID, collectionRef)
             .then((result) => {
                 console.log("result", result)
                 toast.dismiss(toastId)
@@ -102,23 +102,6 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
         }
     };
 
-
-
-    // useEffect(()=>{
-    //   const savedMovies = localStorage.getItem("savedMovies")
-
-    //     if (savedMovies) {
-    //         try {
-    //             const parsedData = JSON.parse(savedMovies);
-    //             // console.log("parsedData", parsedData)
-    //             if (Array.isArray(parsedData)) {
-    //                 setSavedMovieIDS(parsedData);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error parsing stored data:', error);
-    //         }
-    //     }
-    // },[])
 
     return (
         <div>

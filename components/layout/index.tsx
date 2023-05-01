@@ -1,17 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useContext, useMemo } from 'react'
 import Header from '../header'
-import Footer from '../footer'
 import { AppContext } from '@/context'
 import LoginModal from '../modal/login.auth'
 import SignUpModal from '../modal/signup.auth'
 import { useRouter } from 'next/router'
-import { firestoreDB, firebaseAuth } from '@/config/firebase.config'
-import { doc, collection, onSnapshot, DocumentData } from 'firebase/firestore'
+import { firebaseAuth } from '@/config/firebase.config'
+import { DocumentData } from 'firebase/firestore'
 import { fetchBookmarks } from '@/services/bookmarks.service'
-// import Image from 'next/image'
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, showUserDropdown, setShowUserDropdown, setSelectedMovieID, bookmarkedMovies, setBookmarkedMovies, setSavedMovieIDS } = useContext(AppContext)
+    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setShowUserDropdown, setBookmarkedMovies, setSavedMovieIDS } = useContext(AppContext)
     const router = useRouter()
 
     const [movieIDS, setMovieIDS] = React.useState<DocumentData[]>([]);
@@ -66,8 +65,8 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
             setBookmarkedMovies(moviesData);
         }
     }, [movieIDS, moviesData, setBookmarkedMovies, setSavedMovieIDS])
-    
-    
+
+
     // console.log("bookmarked", bookmarkedMovies)
 
 
@@ -99,8 +98,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
             }
         };
 
-
-
         window.addEventListener("scroll", handleScroll);
 
         return () => {
@@ -116,7 +113,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
             <main className='flex  flex-1 h-[90vh] overflow-x-hidden'>
                 {children}
             </main>
-            {/* <Footer/> */}
         </div>
     )
 }

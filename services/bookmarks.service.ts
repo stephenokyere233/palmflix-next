@@ -27,7 +27,7 @@ export async function fetchBookmarks() {
 }
 
 
-export async function removeWishListItem(movieID: any, collectionRef: CollectionReference<DocumentData>) {
+export async function removeBookmark(movieID: any, collectionRef: CollectionReference<DocumentData>) {
     let updatedSavedMovies
     try {
         await deleteDoc(doc(collectionRef, movieID));

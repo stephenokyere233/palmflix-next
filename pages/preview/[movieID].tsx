@@ -6,12 +6,11 @@ import YouTubePlayer from '@/components/ytplayer';
 import { firebaseAuth, firestoreDB } from '@/config/firebase.config';
 import { img_path } from '@/constants/endpoints';
 import { AppContext } from '@/context';
-import { removeWishListItem } from '@/services/bookmarks.service';
+import { removeBookmark } from '@/services/bookmarks.service';
 import { CollectionReference, DocumentData, collection } from '@firebase/firestore';
 import axios from 'axios';
 import { setDoc, doc } from 'firebase/firestore';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -22,7 +21,6 @@ const MoviePreview: React.FC<any> = () => {
     const [movieCastInfo, setMovieCastInfo] = useState<any>(null)
     const [dataType, setDataType] = useState<string>("movie")
     const [loading, setLoading] = useState(true);
-    const [isSavingBookmark, setIsSavingBookmark] = useState<boolean>(false)
     const router = useRouter()
     const { setSelectedMovieID, selectedMovieID, setShowLoginModal, savedMovieIDS, setSavedMovieIDS } = useContext(AppContext)
     const [trailers, setTrailers] = useState<any>([])
@@ -146,7 +144,6 @@ const MoviePreview: React.FC<any> = () => {
 
 
     const fetchTrailer = async (movieID: string) => {
-        // setLoading(true)
         const api_url = 'https://api.themoviedb.org/3';
         const endpoint = `${api_url}/${dataType}/${movieID}/videos?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`;
         try {
@@ -186,7 +183,7 @@ const MoviePreview: React.FC<any> = () => {
 
     function handleRemoveButtonClick(movieID: string, collectionRef: CollectionReference<DocumentData>) {
         const toastId = toast.loading("removing item...")
-        removeWishListItem(movieID, collectionRef)
+        removeBookmark(movieID, collectionRef)
             .then((result) => {
                 console.log("result", result)
                 toast.dismiss(toastId)
@@ -231,7 +228,6 @@ const MoviePreview: React.FC<any> = () => {
                 handleRemoveButtonClick(movieInfo.id.toString(), collectionRef)
             }
             else {
-                setIsSavingBookmark(true)
                 const toastId = toast.loading('Loading...');
                 await setDoc(doc(firestoreDB, docRef), movieToSave).then(() => {
                     toast.success("Added to bookmarks")

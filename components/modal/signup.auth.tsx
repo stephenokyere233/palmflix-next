@@ -3,8 +3,6 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { firebaseAuth } from '@/config/firebase.config';
 import { onAuthenticationSuccess } from '@/services/auth.service';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { BiX } from 'react-icons/bi';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { cloudStorage } from '@/config/firebase.config';
@@ -18,10 +16,7 @@ const SignUpModal = () => {
     const [errorMessage, setErrorMessage] = React.useState<string>("")
     const [loading, setLoading] = React.useState<boolean>(false)
     const [file, setFile] = React.useState<any>(null)
-    const router = useRouter()
-
     const { setShowSignupModal, setShowLoginModal } = useContext(AppContext)
-
 
     const registerUserWithEmailAndPassword = async () => {
         setLoading(true)
@@ -41,7 +36,7 @@ const SignUpModal = () => {
                                 }).then(() => {
                                     onAuthenticationSuccess(res.user)
                                     setShowSignupModal(false)
-                
+
                                     setLoading(false)
                                 }).catch((error) => {
                                     setLoading(false)
@@ -56,12 +51,11 @@ const SignUpModal = () => {
                         displayName: name,
                     }).then(() => {
                         onAuthenticationSuccess(res.user)
-                       setShowSignupModal(false)
+                        setShowSignupModal(false)
                         setLoading(false)
                     }).catch((error) => {
                         setLoading(false)
                         toast.error("couldn't add user details")
-                        // toast.error
                     });
 
                 }

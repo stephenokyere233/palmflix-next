@@ -1,15 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FormEvent, useContext } from 'react'
-import { BiSun } from "react-icons/bi"
 import { useRouter } from "next/router"
 import { AppContext } from '@/context'
 import { FaSearch } from 'react-icons/fa'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import Loader from '../loader/Loader'
 import LoadIcon from '../loader/LoadIcon'
 import { firebaseAuth } from '@/config/firebase.config'
-import { User, onAuthStateChanged } from 'firebase/auth'
-import Link from 'next/link'
+import { onAuthStateChanged } from 'firebase/auth'
 import Logo from '../logo'
 import Image from 'next/image'
 import UserDropDown from '../modal/user.modal'
@@ -18,7 +16,7 @@ const Header = () => {
   const router = useRouter()
   const [loading, setLoading] = React.useState<boolean>(false)
 
-  const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, searchQuery, setSearchQuery, searchResults, setSearchResults, showUserDropdown, setShowUserDropdown, authenticatedUser, setAuthenticatedUser } = useContext(AppContext)
+  const {setShowLoginModal, searchQuery, setSearchQuery, setSearchResults, showUserDropdown, setShowUserDropdown, setAuthenticatedUser } = useContext(AppContext)
 
   const handleSearch = async (query: string) => {
     setLoading(true)
