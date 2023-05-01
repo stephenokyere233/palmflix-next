@@ -36,20 +36,20 @@ const Test = () => {
 
         axios.request(options).then(function (response) {
             if (url.includes(discover_movies)) {
-                console.log("discover", response.data);
+                // console.log("discover", response.data);
                 setDiscoverMovies(response.data.results)
             }
             else if (url.includes(trending_movies)) {
-                console.log("trending", response.data);
+                // console.log("trending", response.data);
                 setTrendingMovies(response.data.results)
             }
             else if (url.includes(tv_shows)) {
-                console.log("tv", response.data);
+                // console.log("tv", response.data);
                 setTvShows(response.data.results)
             }
             else if (url.includes(top_rated)) {
                 setTopRatedMovies(response.data.results)
-                console.log("popular", response.data.results)
+                // console.log("popular", response.data.results)
             }
             setLoading(false)
         }).catch(function (error) {
@@ -105,7 +105,6 @@ const Test = () => {
         getMovies(tv_shows)
         fetchData();
     }, []);
-    console.log(topTrendIDS)
     return (
 
         <div>

@@ -17,9 +17,9 @@ export const AppProvider = ({ children }) => {
     const [tvShows, setTvShows] = useState([])
     const [authenticatedUser, setAuthenticatedUser] = React.useState(null)
     const [savedMovieIDS, setSavedMovieIDS] = useState([])
-    const [bookmarkedMovies, setBookmarkedMovies] = useState ([])
+    const [bookmarkedMovies, setBookmarkedMovies] = useState([])
 
-    
+
 
     return (
         <AppContext.Provider

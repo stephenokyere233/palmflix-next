@@ -43,9 +43,6 @@ const Header = () => {
   }
 
 
-
-
-
   React.useEffect(() => {
     listenForAuthStateChange()
   }, [])

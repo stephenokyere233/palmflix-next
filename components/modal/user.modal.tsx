@@ -9,7 +9,7 @@ import ModalLayout from '../layout/ModalLayout'
 
 const UserDropDown = () => {
 
-    const { authenticatedUser, setAuthenticatedUser, showUserDropdown, setShowUserDropdown, setSavedMovieIDS } = useContext(AppContext)
+    const { authenticatedUser, setAuthenticatedUser, showUserDropdown, setShowUserDropdown, setSavedMovieIDS, setBookmarkedMovies } = useContext(AppContext)
 
     const signOut = () => {
         firebaseAuth.signOut().then(() => {
@@ -18,6 +18,7 @@ const UserDropDown = () => {
             sessionStorage.clear()
             setShowUserDropdown(false)
             setSavedMovieIDS([])
+            setBookmarkedMovies([])
             toast.success("Logged out Successfully")
         }).catch((error) => {
             console.log(error)

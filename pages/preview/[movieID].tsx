@@ -4,7 +4,8 @@ import Loader from '@/components/loader/Loader';
 import { firebaseAuth, firestoreDB } from '@/config/firebase.config';
 import { img_path } from '@/constants/endpoints';
 import { AppContext } from '@/context';
-import { collection } from '@firebase/firestore';
+import { removeWishListItem } from '@/services/bookmarks.service';
+import { CollectionReference, DocumentData, collection } from '@firebase/firestore';
 import axios from 'axios';
 import { setDoc, doc } from 'firebase/firestore';
 import Image from 'next/image';
@@ -17,10 +18,12 @@ import { BiBookmark } from 'react-icons/bi';
 const MoviePreview: React.FC<any> = () => {
     const [movieInfo, setMovieInfo] = useState<any>(null);
     const [movieCastInfo, setMovieCastInfo] = useState<any>(null)
+    const [dataType, setDataType] = useState<string>("movie")
     const [loading, setLoading] = useState(true);
     const [isSavingBookmark, setIsSavingBookmark] = useState<boolean>(false)
     const router = useRouter()
     const { setSelectedMovieID, selectedMovieID, setShowLoginModal, savedMovieIDS, setSavedMovieIDS } = useContext(AppContext)
+    const [trailers, setTrailers] = useState<any>([])
 
 
     function mergeObjects(obj1: any, obj2: any) {
@@ -72,18 +75,22 @@ const MoviePreview: React.FC<any> = () => {
             mergeObjects(movieData, tvData)
             console.log("movieCast", movieCast)
             console.log("tvCast", tvCast)
-            if (movieCast.cast.length > 1) {
+            if (movieCast.cast && movieCast.cast.length > 1) {
                 setMovieCastInfo(movieCast)
+                setDataType("movie")
             }
-            else if (tvCast.cast.length > 1) {
+            else if (tvCast.cast && tvCast.cast.length > 1) {
                 console.log("tvCast found")
                 setMovieCastInfo(tvCast)
+                setDataType("tv")
 
             }
-            // else if (movieCast.cast.length > 1 && tvCast.cast.length > 1) {
-            //     setMovieCast(tvCast)
-            //     console.log("both defined")
-            // }
+            else if ((movieCast.cast && movieCast.cast.length > 1) && (tvCast.cast && tvCast.cast.length > 1)) {
+                console.log("both defined")
+                setMovieCastInfo(movieCast)
+                setDataType("movie")
+            }
+
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -116,6 +123,55 @@ const MoviePreview: React.FC<any> = () => {
         }
     }, [])
 
+
+    const fetchTrailer = async (movieID: string) => {
+        // setLoading(true)
+        const api_url = 'https://api.themoviedb.org/3';
+        const endpoint = `${api_url}/${dataType}/${movieID}/videos?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`;
+        try {
+            const response = await axios.get(endpoint);
+            // setLoading(false)
+            console.log(response.data.results)
+            setTrailers(response.data.results)
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+
+    }
+
+    React.useEffect(() => {
+        const savedMovies = localStorage.getItem("savedMovies")
+
+        if (savedMovies) {
+            try {
+                const parsedData = JSON.parse(savedMovies);
+                console.log("parsedData", parsedData)
+                if (Array.isArray(parsedData)) {
+                    setSavedMovieIDS(parsedData);
+                }
+            } catch (error) {
+                console.error('Error parsing stored data:', error);
+            }
+        }
+    },[])
+
+
+    function handleRemoveButtonClick(movieID: string, collectionRef: CollectionReference<DocumentData>) {
+        removeWishListItem(movieID, collectionRef)
+            .then((result) => {
+                console.log("result",result)
+                console.log('Item removed successfully');
+                toast.success("Item removed successfully")
+            })
+            .catch((error) => {
+                console.error('Error removing item:', error);
+                toast.error('Error removing item:', error)
+            });
+    }
+
     const addToBookmark = async () => {
         let savedArray = [...savedMovieIDS]
         if (!firebaseAuth.currentUser?.uid) {
@@ -132,15 +188,19 @@ const MoviePreview: React.FC<any> = () => {
                 id: movieInfo.id,
                 uid: firebaseAuth.currentUser.uid,
                 backdrop_path: movieInfo.backdrop_path,
-                poster_path:movieInfo.poster_path,
+                poster_path: movieInfo.poster_path,
                 description: movieInfo.overview,
             }
             let docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieInfo.id}`
+            let collectionRef = collection(firestoreDB, `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks`);
+
 
             const LSMovies = localStorage.getItem("savedMovies") || ""
 
+
+
             if (LSMovies.includes(movieInfo.id)) {
-                toast.error("already saved")
+                handleRemoveButtonClick(movieInfo.id.toString(), collectionRef)
             }
             else {
                 setIsSavingBookmark(true)
@@ -160,13 +220,17 @@ const MoviePreview: React.FC<any> = () => {
 
     }
 
-    console.log(savedMovieIDS)
 
     if (loading) {
         return (
             <div className='min-h-screen w-full flex justify-center items-center '>
                 <Loader />
             </div>
+        )
+    }
+    if (!movieInfo) {
+        return (
+            <div className='flex  h-[90vh] w-full flex-1 items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>Error getting movie data</p> </div>
         )
     }
 
@@ -176,13 +240,17 @@ const MoviePreview: React.FC<any> = () => {
         movieInfo && <>
             <div className='w-[90rem] bg-[#040720] mb-10 p-4 mx-auto '>
 
-                <header className="h-[500px] rounded-md  w-full bg-cover bg-no-repeat" style={{
+                <header className="h-[500px] rounded-md  w-full bg-cover bg-no-repeat relative" style={{
                     backgroundImage: `url(${img_path + (movieInfo.backdrop_path || movieInfo.poster_path)
                         })`
                 }}>
                     <button className=' bg-brand text-white m-3 p-2 px-4 rounded-md' onClick={() => router.back()}>
                         Back
                     </button>
+                    <div className='absolute bottom-6 mx-6'>
+                        <h2 className='text-4xl font-bold '>{movieInfo.title || movieInfo.name}</h2>
+                        <button className=' bg-brand p-2 px-4 rounded-md text-xl' onClick={() => fetchTrailer(movieInfo.id)}>Watch Trailer</button>
+                    </div>
                 </header>
                 <div className='flex items-center gap-4  px-6 py-4  justify-between'>
                     <div className='flex items-center gap-4'>
@@ -197,7 +265,7 @@ const MoviePreview: React.FC<any> = () => {
                     </div>
 
                     {
-                        savedMovieIDS.includes(movieInfo.id) ?
+                      savedMovieIDS?.includes(movieInfo.id) ?
                             <div className='flex gap-3 cursor-pointer text-green-400 ' onClick={addToBookmark}>
                                 <p>Saved</p><BiBookmark size={24} />
                             </div> : <div className='flex gap-3 cursor-pointer' onClick={addToBookmark}>

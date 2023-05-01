@@ -9,6 +9,7 @@ import MovieCard from "@/components/Cards/MovieCard";
 import { TABS } from "@/constants/TABS"
 import Link from "next/link";
 import MoviesLayout from "@/components/layout/MoviesLayout";
+import Image from "next/image";
 
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(false)
@@ -58,8 +59,8 @@ export default function Home() {
   return (
     <MoviesLayout actionNext={goToNextPage} actionPrev={goToPrevPage} title="Discover Movies">
       {
-        loading ? <Loader/> : (
-          moviesData && moviesData.results.map((movie: { title: any; name: any; id: any; poster_path: any; }) => {
+        loading ? <Loader /> : (
+          !moviesData ? <div className='flex items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>Error getting movies</p> </div> : moviesData.results.map((movie: { title: any; name: any; id: any; poster_path: any; }) => {
             const { title, name, id, poster_path } = movie
             return (
               <MovieCard key={id} title={title || name} imageURL={poster_path} movieID={id} />

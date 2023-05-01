@@ -25,7 +25,7 @@ const ModalLayout: React.FC<TModalProps> = ({ showModal, title, children, onHide
 
     if (showModal === false) return (<></>)
     else return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-screen h-screen bg-[#00000080] z-20 fixed top-0 left-0 flex items-center justify-center" onClick={handleBackgroundClick}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-screen h-screen bg-[#00000080] z-[20] fixed top-0 left-0 flex items-center justify-center" onClick={handleBackgroundClick}>
             <div className="p-2 md:p-0 absolute ">
                 <div className={`bg-[#00094B] p-2 md:p-10 rounded-xl w-full max-w-[650px] `}>
                     {children}

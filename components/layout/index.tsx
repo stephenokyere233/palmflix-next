@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React, { FC, useContext, useMemo } from 'react'
 import Header from '../header'
 import Footer from '../footer'
 import { AppContext } from '@/context'
@@ -8,22 +8,25 @@ import { useRouter } from 'next/router'
 import { firestoreDB, firebaseAuth } from '@/config/firebase.config'
 import { doc, collection, onSnapshot, DocumentData } from 'firebase/firestore'
 import { fetchBookmarks } from '@/services/bookmarks.service'
+// import Image from 'next/image'
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, showUserDropdown, setShowUserDropdown, setSelectedMovieID, bookmarkedMovies, setBookmarkedMovies, setSavedMovieIDS } = useContext(AppContext)
     const router = useRouter()
-    let movieIDS: DocumentData[]=[]
 
+    const [movieIDS, setMovieIDS] = React.useState<DocumentData[]>([]);
+    const [moviesData, setMoviesData] = React.useState<DocumentData[]>([]);
 
-    const getBookmarks = async () => {
-        const { savedMoviesData_, movieIDS_ } = await fetchBookmarks();
-        movieIDS=movieIDS_
-        // setSavedMovieIDS(movieIDS_);
-        setBookmarkedMovies(savedMoviesData_);
-    };
     React.useEffect(() => {
+        const getBookmarks = async () => {
+            const { savedMoviesData_, movieIDS_ } = await fetchBookmarks();
+            setSavedMovieIDS(movieIDS_);
+            setBookmarkedMovies(savedMoviesData_);
+            setMovieIDS(movieIDS_);
+            setMoviesData(savedMoviesData_);
+        };
         getBookmarks();
-    }, [router,firebaseAuth.currentUser?.uid])
+    }, [router, firebaseAuth.currentUser?.uid]);
 
 
 
@@ -41,10 +44,31 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
                 console.error('Error parsing stored data:', error);
             }
         }
-        else{
-        setSavedMovieIDS(movieIDS);
+        else {
+            setSavedMovieIDS(movieIDS);
         }
-    }, [])
+
+        const savedMoviesData = localStorage.getItem("savedMoviesData")
+
+        if (savedMoviesData) {
+            try {
+                const parsedData = JSON.parse(savedMoviesData);
+                if (Array.isArray(parsedData)) {
+                    setBookmarkedMovies(parsedData);
+                    console.log("setting from LS")
+                    console.log("parsed", parsedData)
+                }
+            } catch (error) {
+                console.error('Error parsing stored data:', error);
+            }
+        }
+        else {
+            setBookmarkedMovies(moviesData);
+        }
+    }, [movieIDS, moviesData, setBookmarkedMovies, setSavedMovieIDS])
+    
+    
+    // console.log("bookmarked", bookmarkedMovies)
 
 
 

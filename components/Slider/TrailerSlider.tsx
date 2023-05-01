@@ -124,7 +124,7 @@ const TrailerSlider: FC<{ images: any[], autoSlideDuration: number, data?: any }
     return (
         <div className="relative  bg-black overflow-hidden w-screen h-[800px] ">
             <video muted={isMuted} ref={videoRef} src={images[index].video_link} className='w-full h-full object-cover transition-all duration-1000 delay-75 ease-in-out transform ' onEnded={handleNextClick} autoPlay={true}></video>
-            <button className='absolute bg-red z-[20] top-[50%] w-[100px] h-[100px] right-[50%] bg-gray-400 opacity-40 justify-center flex items-center p-4 rounded-full' onClick={handlePlayPause}>{isPlaying ? <FaPause size={32} /> : <FaPlay size={32} />}</button>
+            <button className='absolute bg-red z-10 top-[50%] w-[100px] h-[100px] right-[50%] bg-gray-400 opacity-40 justify-center flex items-center p-4 rounded-full' onClick={handlePlayPause}>{isPlaying ? <FaPause size={32} /> : <FaPlay size={32} />}</button>
             <button className='absolute bg-brand rounded-full p-4 opacity-80 bottom-6 md:bottom-10 right-10' onClick={handleMuteToggle}>
                 {isMuted ? <FaVolumeMute size={32} /> : <FaVolumeUp size={32} />}
             </button>

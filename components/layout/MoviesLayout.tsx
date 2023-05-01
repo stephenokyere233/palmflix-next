@@ -6,30 +6,23 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import MovieCard from '../Cards/MovieCard';
 import Loader from '../loader/Loader';
 import { useRouter } from 'next/router';
+import Sidebar from '../Nav';
 
 type moviesLayoutProps = {
     children: React.ReactNode,
     currentPage?: number,
     totalPages?: number,
-    title:string
+    title: string
     actionNext: () => void
     actionPrev: () => void
 }
 
-const MoviesLayout: React.FC<moviesLayoutProps> = ({ children, currentPage, totalPages,title, actionNext, actionPrev }) => {
+const MoviesLayout: React.FC<moviesLayoutProps> = ({ children, currentPage, totalPages, title, actionNext, actionPrev }) => {
     const router = useRouter()
 
     return (
         <section className="flex flex-1 h-[91vh]">
-            <nav className="w-[100px]  py-6 flex items-center gap-10 flex-col ">
-                {
-                    TABS.map(tab => (
-                        <Link className={router.pathname === tab.route ? "text-brand" : ""} key={tab.name} href={tab.route}>
-                            <tab.icon size={24} />
-                        </Link>
-                    ))
-                }
-            </nav>
+            <Sidebar />
             <main className=" flex flex-col flex-1">
                 <header className="h-16 flex items-center justify-between lg:px-20">
                     <MdKeyboardArrowLeft size={28} onClick={actionPrev} />
