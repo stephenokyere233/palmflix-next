@@ -135,7 +135,12 @@ const MoviePreview: React.FC<any> = () => {
         else {
             fetchMovieData(selectedMovieID);
         }
-    }, [])
+    }, [selectedMovieID])
+    useEffect(() => {
+        const { movieID } = router.query
+        setSelectedMovieID(movieID)
+        localStorage.setItem("selectedMovieID", movieID?.toString() as string)
+    }, [router])
 
 
     const fetchTrailer = async (movieID: string) => {
@@ -258,7 +263,7 @@ const MoviePreview: React.FC<any> = () => {
 
         movieInfo && <>
             {showPlayer && <YouTubePlayer videoId={trailers[0].key} onClose={() => setShowPlayer(false)} />}
-            <div className='w-[90rem] bg-[#040720] mb-10 p-4 mx-auto '>
+            <div className='md:w-[90rem] w-screen bg-[#040720] mb-10 p-4 mx-auto '>
 
                 <header className="h-[500px] rounded-md  w-full bg-cover bg-no-repeat relative" style={{
                     backgroundImage: `url(${img_path + (movieInfo.backdrop_path || movieInfo.poster_path)
@@ -272,7 +277,7 @@ const MoviePreview: React.FC<any> = () => {
                         <button className=' bg-brand p-2 px-4 rounded-md text-xl' onClick={() => fetchTrailer(movieInfo.id)}>Watch Trailer</button>
                     </div>
                 </header>
-                <div className='flex items-center gap-4  px-6 py-4  justify-between'>
+                <div className='flex flex-col md:flex-row items-center gap-4  md:px-6 py-4  justify-between'>
                     <div className='flex items-center gap-4'>
                         <div className='border w-[150px] h-[120px] flex justify-center items-center text-3xl text-brand font-bold'>
                             {movieInfo.vote_average.toFixed(1)}
@@ -296,7 +301,7 @@ const MoviePreview: React.FC<any> = () => {
 
 
                 </div>
-                <div className='px-10 py-6 flex gap-4'>
+                <div className='md:px-10 py-6 flex flex-col md:flex-row gap-4'>
                     <h2 className='text-xl font-bold text-brand '>Description</h2>
                     <p className='max-w-[1000px]'>{movieInfo.overview}</p>
                 </div>
@@ -304,7 +309,7 @@ const MoviePreview: React.FC<any> = () => {
                 <section className=''>
                     <h2 className='text-center text-brand text-2xl font-semibold'>Movie Casts</h2>
                     <div className=''>
-                        <div className='grid grid-cols-4 place-items-center  py-6 gap-4'>
+                        <div className='grid lg:grid-cols-4 grid-cols-2 place-items-center  py-6 gap-4'>
                             {
                                 movieCastInfo && movieCastInfo.cast?.slice(0, showAllCasts).map((cast: { name: any; profile_path: any; id: any; character: any; }) => {
                                     const { name, profile_path, id, character } = cast
@@ -333,9 +338,9 @@ const MoviePreview: React.FC<any> = () => {
                     </div>
                     <div className=' mt-4'>
                         <h2 className='text-center text-brand text-2xl font-semibold'> Recommended Movies For You</h2>
-                        <div className='grid grid-cols-4 place-items-center  py-6 gap-4'>
+                        <div className='flex flex-wrap  justify-center py-6 gap-4'>
                             {
-                                similarMovies.map((movie) => {
+                                similarMovies && similarMovies.length < 1 ? <><h2 className='text-xl'>No related movies</h2></> : similarMovies.map((movie) => {
                                     const { title, name, id, poster_path } = movie
                                     return (
                                         <MovieCard key={id} title={title || name} imageURL={poster_path} movieID={id} />

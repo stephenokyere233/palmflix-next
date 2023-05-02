@@ -8,9 +8,11 @@ import { useRouter } from 'next/router'
 import { firebaseAuth } from '@/config/firebase.config'
 import { DocumentData } from 'firebase/firestore'
 import { fetchBookmarks } from '@/services/bookmarks.service'
+import useLoading from "@/hooks/useLoading"
+import Loader from '../loader/Loader'
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setShowUserDropdown, setBookmarkedMovies, setSavedMovieIDS } = useContext(AppContext)
+    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setShowUserDropdown, setBookmarkedMovies, setSavedMovieIDS, showSidebar, setShowSidebar } = useContext(AppContext)
     const router = useRouter()
 
     const [movieIDS, setMovieIDS] = React.useState<DocumentData[]>([]);
@@ -69,6 +71,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
 
     // console.log("bookmarked", bookmarkedMovies)
 
+    const { loading } = useLoading()
 
 
 
@@ -79,6 +82,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
                 setShowSignupModal(false);
                 setShowLoginModal(false);
                 setShowUserDropdown(false)
+                setShowSidebar(false)
 
             }
         }
@@ -89,6 +93,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         setShowSignupModal(false);
         setShowLoginModal(false);
         setShowUserDropdown(false)
+        setShowSidebar(false)
     }, [router])
 
     React.useEffect(() => {
@@ -104,6 +109,14 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+
+    if (loading) {
+        return (
+            <div className='w-full h-screen flex justify-center items-center'>
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <div className=' text-white flex flex-col w-full'>

@@ -2,7 +2,7 @@
 import React, { FormEvent, useContext } from 'react'
 import { useRouter } from "next/router"
 import { AppContext } from '@/context'
-import { FaSearch } from 'react-icons/fa'
+import { FaBars, FaSearch } from 'react-icons/fa'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import LoadIcon from '../loader/LoadIcon'
@@ -11,12 +11,13 @@ import { onAuthStateChanged } from 'firebase/auth'
 import Logo from '../logo'
 import Image from 'next/image'
 import UserDropDown from '../modal/user.modal'
+import { BiX } from 'react-icons/bi'
 
 const Header = () => {
   const router = useRouter()
   const [loading, setLoading] = React.useState<boolean>(false)
 
-  const {setShowLoginModal, searchQuery, setSearchQuery, setSearchResults, showUserDropdown, setShowUserDropdown, setAuthenticatedUser } = useContext(AppContext)
+  const { setShowLoginModal, searchQuery, setSearchQuery, setSearchResults, showUserDropdown, setShowUserDropdown, setAuthenticatedUser, showSidebar, setShowSidebar } = useContext(AppContext)
 
   const handleSearch = async (query: string) => {
     setLoading(true)
@@ -55,9 +56,9 @@ const Header = () => {
   }
 
   return (
-    <header className={`flex z-20 ${router.pathname === "/" && "fixed top-0"}  w-full justify-between px-10  h-20 items-center`}>
+    <header className={`flex z-20 ${router.pathname === "/" && "fixed top-0"}  w-full justify-between px-4 md:px-10  h-20 items-center`}>
       <Logo />
-      <div className=''>
+      <div className='hidden md:block'>
         <form onSubmit={handleSubmit}>
           <div className='border border-gray-400 p-2 px-4 rounded-md flex items-center justify-start gap-4 min-w-[400px] relative bg-gray-400 bg-opacity-20'>
             <FaSearch className='text-gray-400' />
@@ -67,14 +68,22 @@ const Header = () => {
         </form>
       </div>
 
-      {
+
+      <div className='flex items-center gap-3'>{
         !firebaseAuth.currentUser?.uid ?
-          <button onClick={() => setShowLoginModal(true)}>Login</button> : <div className='relative'>
-            <Image onClick={()=>setShowUserDropdown(true)} src={firebaseAuth.currentUser?.photoURL || "/user1.png"} alt={firebaseAuth.currentUser?.displayName || ""} width={100} height={100} className='rounded-full w-12 h-12 cursor-pointer bg-brand' />
-           { showUserDropdown&&<UserDropDown/>}
-          </div>
-      }
-   
+          <button className='p-1 px-2 rounded-md bg-brand ' onClick={() => setShowLoginModal(true)}>Login</button> : <div className='relative'>
+            <Image onClick={() => setShowUserDropdown(true)} src={firebaseAuth.currentUser?.photoURL || "/user1.png"} alt={firebaseAuth.currentUser?.displayName || ""} width={100} height={100} className='rounded-full w-12 h-12 cursor-pointer bg-brand' />
+            {showUserDropdown && <UserDropDown />}
+          </div>}
+        <div className='md:hidden block'>
+          {
+            showSidebar ? <BiX size={24} onClick={() => setShowSidebar(false)} /> :
+              <FaBars size={24} onClick={() => setShowSidebar(true)} />
+          }
+        </div>
+      </div>
+
+
     </header>
   )
 }

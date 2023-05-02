@@ -5,7 +5,7 @@ import TrailerSlider from '@/components/Slider/TrailerSlider';
 import Footer from '@/components/footer';
 import MovieSliderLayout from '@/components/layout/MovieSliderLayout';
 import Loader from '@/components/loader/Loader';
-import { discover_movies, img_path, top_rated, trending_movies, tv_shows } from '@/constants/endpoints';
+import { discover_movies, img_path, top_rated, trending_movies, tv_shows, upcoming_movies } from '@/constants/endpoints';
 import { TRAILERS } from '@/constants/trailers';
 import { AppContext } from '@/context';
 import { fetchBookmarks } from '@/services/bookmarks.service';
@@ -14,7 +14,7 @@ import React, { useContext } from 'react'
 import { MdKeyboardArrowRight } from "react-icons/md"
 
 const Home = () => {
-    const { discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies, tvShows, setTvShows } = useContext(AppContext)
+    const { discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies, tvShows, setTvShows, upcomingMovies, setUpcomingMovies } = useContext(AppContext)
 
     const [topTrends, setTopTrends] = React.useState<any>([]);
     const [topTrendsImages, setTopTrendsImages] = React.useState<any>([]);
@@ -41,6 +41,9 @@ const Home = () => {
             }
             else if (url.includes(top_rated)) {
                 setTopRatedMovies(response.data.results)
+            }
+            else if(url.includes(upcoming_movies)){
+                setUpcomingMovies(response.data.results)
             }
             setLoading(false)
         }).catch(function (error) {
@@ -72,6 +75,7 @@ const Home = () => {
         getMovies(discover_movies)
         getMovies(trending_movies)
         getMovies(top_rated)
+        getMovies(upcoming_movies)
         getMovies(tv_shows)
         fetchData();
     }, []);
@@ -93,6 +97,7 @@ const Home = () => {
                             <ImageSlider images={topTrendsImages} autoSlideDuration={5000} data={topTrends} />
                         </div>
                         <MovieSliderLayout title="Popular movies" movieArray={topRatedMovies} link="top_rated" />
+                        <MovieSliderLayout title="Coming Soon" movieArray={upcomingMovies} link="coming_soon" />
                         <MovieSliderLayout title="tv shows" movieArray={tvShows} link='
                         tv_shows'/>
                     </main>

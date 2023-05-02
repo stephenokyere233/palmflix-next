@@ -2,7 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["image.tmdb.org", "cdn.dribbble.com", "global-uploads.webflow.com", "lh3.googleusercontent.com"]
+    domains: ["image.tmdb.org", "cdn.dribbble.com", "global-uploads.webflow.com", "lh3.googleusercontent.com"],
+    unoptimized: true
   }
 }
 

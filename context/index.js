@@ -15,9 +15,11 @@ export const AppProvider = ({ children }) => {
     const [trendingMovies, setTrendingMovies] = useState([])
     const [topRatedMovies, setTopRatedMovies] = useState([])
     const [tvShows, setTvShows] = useState([])
+    const [upcomingMovies, setUpcomingMovies] = useState([])
     const [authenticatedUser, setAuthenticatedUser] = React.useState(null)
     const [savedMovieIDS, setSavedMovieIDS] = useState([])
     const [bookmarkedMovies, setBookmarkedMovies] = useState([])
+    const [showSidebar, setShowSidebar] = useState(false)
 
 
 
@@ -36,7 +38,9 @@ export const AppProvider = ({ children }) => {
                 showUserDropdown, setShowUserDropdown,
                 authenticatedUser, setAuthenticatedUser,
                 savedMovieIDS, setSavedMovieIDS,
-                bookmarkedMovies, setBookmarkedMovies
+                bookmarkedMovies, setBookmarkedMovies,
+                upcomingMovies, setUpcomingMovies,
+                showSidebar, setShowSidebar
             }}
         >
             {children}
