@@ -9,7 +9,7 @@ const Sidebar = () => {
     const { showSidebar, setShowSidebar }=useContext(AppContext)
     return (
         <>
-            <nav className={`w-[300px] ${showSidebar ? "absolute w-full h-[90vh] flex" : "hidden"}  border-gray-600 py-6 px-4  md:flex  gap-10 flex-col bg-[#040720] `}>
+            <nav className={`w-[300px] ${showSidebar ? "absolute w-full h-[90vh] flex z-[30]" : "hidden"}  border-gray-600 py-6 px-4  md:flex  gap-10 flex-col bg-[#040720] `}>
                 {
                     TABS.map(tab => (
                         <Link className={router.pathname === tab.route ? "text-brand" : ""} key={tab.name} href={tab.route}>

@@ -36,12 +36,11 @@ export async function removeBookmark(movieID: any, collectionRef: CollectionRefe
         const savedMovies = localStorage.getItem("savedMovies");
         if (savedMovies) {
             try {
-                const parsedData = JSON.parse(savedMovies);
+                const parsedData = JSON.parse(savedMovies as string);
                 if (Array.isArray(parsedData)) {
                     const updatedSavedMovies_ = parsedData.filter((id: string) => id !== movieID);
-                    localStorage.setItem("savedMovies", JSON.stringify(updatedSavedMovies_));
+                    localStorage.setItem("savedMovies", JSON.stringify(parsedData.filter((id: string) => id !== movieID)));
                     console.log("Item removed from localStorage savedMovies");
-                    updatedSavedMovies = updatedSavedMovies_
                 }
             } catch (error) {
                 console.error("Error parsing stored savedMovies data:", error);

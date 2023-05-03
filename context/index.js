@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
     const [savedMovieIDS, setSavedMovieIDS] = useState([])
     const [bookmarkedMovies, setBookmarkedMovies] = useState([])
     const [showSidebar, setShowSidebar] = useState(false)
-
+    const [currentMovies, setCurrentMovies] = useState([])
 
 
     return (
@@ -40,6 +40,7 @@ export const AppProvider = ({ children }) => {
                 savedMovieIDS, setSavedMovieIDS,
                 bookmarkedMovies, setBookmarkedMovies,
                 upcomingMovies, setUpcomingMovies,
+                currentMovies, setCurrentMovies,
                 showSidebar, setShowSidebar
             }}
         >

@@ -31,7 +31,7 @@ const NRInput: React.FC<NRInputProps> = ({
     styles,
 }) => {
     return (
-        <fieldset 
+        <fieldset
             className={`
        border border-gray-500
         rounded-md 
@@ -52,6 +52,7 @@ const NRInput: React.FC<NRInputProps> = ({
                 maxLength={maxLength}
                 autoCapitalize="none"
                 onChange={onChange}
+                required
                 className={`w-full bg-transparent pb-2 indent-2 outline-none ${styles ?? ''}`}
             />
         </fieldset>

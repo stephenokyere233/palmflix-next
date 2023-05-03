@@ -5,7 +5,7 @@ import { FaPlay, FaPause, FaVolumeMute, FaVolumeUp } from "react-icons/fa"
 
 const TrailerSlider: FC<{ images: any[], autoSlideDuration: number, data?: any }> = ({ images, autoSlideDuration, data }) => {
     const [index, setIndex] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
+    // const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState<boolean>(true);
 
     const handlePrevClick = () => {
@@ -22,17 +22,17 @@ const TrailerSlider: FC<{ images: any[], autoSlideDuration: number, data?: any }
 
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    function handlePlayPause() {
-        const video = videoRef.current;
-        if (isPlaying) {
-            video?.pause();
-            setIsPlaying(false);
-        } else {
-            video?.play();
-            setIsPlaying(true);
-            setIsMuted(false)
-        }
-    }
+    // function handlePlayPause() {
+    //     const video = videoRef.current;
+    //     if (isPlaying) {
+    //         video?.pause();
+    //         setIsPlaying(false);
+    //     } else {
+    //         video?.play();
+    //         setIsPlaying(true);
+    //         setIsMuted(false)
+    //     }
+    // }
     const handleMuteToggle = () => {
         const video = videoRef.current;
 
@@ -72,22 +72,12 @@ const TrailerSlider: FC<{ images: any[], autoSlideDuration: number, data?: any }
         }
 
     }, []);
- 
 
-    // const autoIncrement = () => {
-    //     const newIndex = index === images.length - 1 ? 0 : index + 1;
-    //     setIndex(newIndex);
-    // };
-
-    // useEffect(() => {
-    //     const intervalId = setInterval(autoIncrement, autoSlideDuration);
-    //     return () => clearInterval(intervalId);
-    // }, [index]);
 
     return (
         <div className="relative  bg-black overflow-hidden w-screen h-[800px] ">
             <video muted={isMuted} ref={videoRef} src={images[index].video_link} className='w-full h-full object-cover transition-all duration-1000 delay-75 ease-in-out transform ' onEnded={handleNextClick} autoPlay={true}></video>
-            <button className='absolute bg-red z-10 top-[50%] w-[100px] h-[100px] right-[50%] bg-gray-400 opacity-40 justify-center flex items-center p-4 rounded-full' onClick={handlePlayPause}>{isPlaying ? <FaPause size={32} /> : <FaPlay size={32} />}</button>
+            {/* <button className='absolute bg-red z-10 top-[50%] w-[100px] h-[100px] right-[50%] bg-gray-400 opacity-40 justify-center flex items-center p-4 rounded-full' onClick={handlePlayPause}>{isPlaying ? <FaPause size={32} /> : <FaPlay size={32} />}</button> */}
             <button className='absolute bg-brand rounded-full p-4 opacity-80 bottom-6 md:bottom-10 right-10' onClick={handleMuteToggle}>
                 {isMuted ? <FaVolumeMute size={32} /> : <FaVolumeUp size={32} />}
             </button>

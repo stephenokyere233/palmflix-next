@@ -20,6 +20,10 @@ const Header = () => {
   const { setShowLoginModal, searchQuery, setSearchQuery, setSearchResults, showUserDropdown, setShowUserDropdown, setAuthenticatedUser, showSidebar, setShowSidebar } = useContext(AppContext)
 
   const handleSearch = async (query: string) => {
+    if(!query) {
+      toast.error("pass a query")
+      return
+    }
     setLoading(true)
     try {
       const response = await axios.get(`https://api.themoviedb.org/3/search/multi?api_key=49aadc9bda210df9f0d47e374c404fd5&query=${query}&page=1`);
@@ -75,12 +79,15 @@ const Header = () => {
             <Image onClick={() => setShowUserDropdown(true)} src={firebaseAuth.currentUser?.photoURL || "/user1.png"} alt={firebaseAuth.currentUser?.displayName || ""} width={100} height={100} className='rounded-full w-12 h-12 cursor-pointer bg-brand' />
             {showUserDropdown && <UserDropDown />}
           </div>}
-        <div className='md:hidden block'>
-          {
-            showSidebar ? <BiX size={24} onClick={() => setShowSidebar(false)} /> :
-              <FaBars size={24} onClick={() => setShowSidebar(true)} />
-          }
-        </div>
+        {
+          router.pathname !== "/" &&
+          <div className='md:hidden block'>
+            {
+              showSidebar ? <BiX size={24} onClick={() => setShowSidebar(false)} /> :
+                <FaBars size={24} onClick={() => setShowSidebar(true)} />
+            }
+          </div>
+        }
       </div>
 
 

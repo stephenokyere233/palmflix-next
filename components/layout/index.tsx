@@ -10,6 +10,7 @@ import { DocumentData } from 'firebase/firestore'
 import { fetchBookmarks } from '@/services/bookmarks.service'
 import useLoading from "@/hooks/useLoading"
 import Loader from '../loader/Loader'
+import Sidebar from '../Nav'
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setShowUserDropdown, setBookmarkedMovies, setSavedMovieIDS, showSidebar, setShowSidebar } = useContext(AppContext)
@@ -69,7 +70,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     }, [movieIDS, moviesData, setBookmarkedMovies, setSavedMovieIDS])
 
 
-    // console.log("bookmarked", bookmarkedMovies)
 
     const { loading } = useLoading()
 
@@ -110,7 +110,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         };
     }, []);
 
-    if (loading) {
+    if (loading && router.pathname==="/") {
         return (
             <div className='w-full h-screen flex justify-center items-center'>
                 <Loader />

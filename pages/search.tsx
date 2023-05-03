@@ -23,32 +23,32 @@ const SearchResults = () => {
         setCurrentPage(currentPage - 1)
     }
 
-    useEffect(()=>{
-        if (searchQuery === ""){
+    useEffect(() => {
+        if (searchQuery === "") {
             router.replace("/search?query=")
         }
-        
 
-    },[])
 
-    if (searchQuery === "") {
+    }, [])
 
-        return (
-            <div className='flex w-full h-[90vh] items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>No input</p> </div>
-        )
-    }
+    // if (searchResults.results.length<1) {
+
+    //     return (
+    //         <div className='flex w-full h-[90vh] items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>No results found</p> </div>
+    //     )
+    // }
 
     return (
         <MoviesLayout actionNext={goToNextPage} actionPrev={goToPrevPage} title="Trending Movies">
             {
 
-                searchResults && searchResults?.results.map((movie: { title: any; name: any; id: any; poster_path: any; }) => {
+                searchResults && (searchResults.results?.length > 1 ? searchResults?.results.map((movie: { title: any; name: any; id: any; poster_path: any; }) => {
                     const { title, name, id, poster_path } = movie
                     return (
                         <MovieCard key={id} title={title || name} imageURL={poster_path} movieID={id} />
                     )
-                })
-
+                }) : <div className='flex w-full items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>No results found</p> </div>
+                )
 
             }
         </MoviesLayout>

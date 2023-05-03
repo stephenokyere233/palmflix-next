@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import MovieCard from '@/components/Cards/MovieCard';
+import Sidebar from '@/components/Nav';
 import ImageSlider from '@/components/Slider/ImageSlider'
 import TrailerSlider from '@/components/Slider/TrailerSlider';
 import Footer from '@/components/footer';
 import MovieSliderLayout from '@/components/layout/MovieSliderLayout';
 import Loader from '@/components/loader/Loader';
-import { discover_movies, img_path, top_rated, trending_movies, tv_shows, upcoming_movies } from '@/constants/endpoints';
+import { discover_movies, img_path, now_showing, top_rated, trending_movies, tv_shows, upcoming_movies } from '@/constants/endpoints';
 import { TRAILERS } from '@/constants/trailers';
 import { AppContext } from '@/context';
 import { fetchBookmarks } from '@/services/bookmarks.service';
@@ -14,7 +15,7 @@ import React, { useContext } from 'react'
 import { MdKeyboardArrowRight } from "react-icons/md"
 
 const Home = () => {
-    const { discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies, tvShows, setTvShows, upcomingMovies, setUpcomingMovies } = useContext(AppContext)
+    const { discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies, tvShows, setTvShows, upcomingMovies, setUpcomingMovies, showSidebar, currentMovies,setCurrentMovies } = useContext(AppContext)
 
     const [topTrends, setTopTrends] = React.useState<any>([]);
     const [topTrendsImages, setTopTrendsImages] = React.useState<any>([]);
@@ -42,8 +43,11 @@ const Home = () => {
             else if (url.includes(top_rated)) {
                 setTopRatedMovies(response.data.results)
             }
-            else if(url.includes(upcoming_movies)){
+            else if (url.includes(upcoming_movies)) {
                 setUpcomingMovies(response.data.results)
+            }
+            else if(url.includes(now_showing)){
+                setCurrentMovies(response.data.results)
             }
             setLoading(false)
         }).catch(function (error) {
@@ -56,12 +60,12 @@ const Home = () => {
         const fetchData = async () => {
             setLoading(true)
             try {
-                const response = await fetch(trending_movies);
+                const response = await fetch(now_showing);
                 const data = await response.json();
                 setLoading(false)
-                setTopTrends(data.results.slice(6, 10));
-                const images = data.results.slice(6, 10).map((movie: { backdrop_path: string; }) => movie.backdrop_path);
-                const movieIDS = data.results.slice(0, 4).map((movie: any) => movie.id);
+                setTopTrends(data.results.slice(0, 10));
+                const images = data.results.slice(0, 10).map((movie: { backdrop_path: string; }) => movie.backdrop_path);
+                const movieIDS = data.results.slice(0, 10).map((movie: any) => movie.id);
                 setTopTrendIDS(movieIDS)
                 const imagesWithPrefix = images.map((image: any) => `${img_path}${image}`);
                 setTopTrendsImages(imagesWithPrefix);
@@ -76,6 +80,7 @@ const Home = () => {
         getMovies(trending_movies)
         getMovies(top_rated)
         getMovies(upcoming_movies)
+        getMovies(now_showing)
         getMovies(tv_shows)
         fetchData();
     }, []);
@@ -83,14 +88,17 @@ const Home = () => {
     return (
         <div>
             {loading ? (
-                <div className='w-screen h-screen flex justify-center items-center'>
+                <div className={`w-screen h-screen flex justify-center items-center ${showSidebar&&"overflow-hidden"}`}>
                     <Loader />
                 </div>
             ) : (
                 <div className=''>
+                    {/* <Sidebar /> */}
                     <TrailerSlider images={TRAILERS} autoSlideDuration={5000} />
                     <main className='min-h-screen  lg:px-10 mx-auto '>
                         <MovieSliderLayout title="top trends" movieArray={trendingMovies} link='/trending' />
+                        <MovieSliderLayout title="now showing in cinemas" movieArray={currentMovies} link='/now_showing' />
+                        
                         <MovieSliderLayout title="discover movies" movieArray={discoverMovies} link="discover" />
                         <div className='px-4'>
                             <h2 className='text-2xl font-semibold capitalize'>More for You</h2>

@@ -6,10 +6,8 @@ import YouTubePlayer from '@/components/ytplayer';
 import { firebaseAuth, firestoreDB } from '@/config/firebase.config';
 import { img_path } from '@/constants/endpoints';
 import { AppContext } from '@/context';
-import { removeBookmark } from '@/services/bookmarks.service';
-import { CollectionReference, DocumentData, collection } from '@firebase/firestore';
 import axios from 'axios';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, deleteDoc } from 'firebase/firestore';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react'
@@ -26,6 +24,7 @@ const MoviePreview: React.FC<any> = () => {
     const [trailers, setTrailers] = useState<any>([])
     const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
     const [showAllCasts, setShowAllCasts] = useState<number>(8)
+    const [similarMovies, setSimilarMovies] = useState<any[]>([]);
 
     function mergeObjects(obj1: any, obj2: any) {
         const merged = { ...obj1, ...obj2 };
@@ -34,8 +33,6 @@ const MoviePreview: React.FC<any> = () => {
                 delete merged[key];
             }
         });
-
-        // console.log("merged", merged)
         setMovieInfo(merged)
     }
 
@@ -95,7 +92,7 @@ const MoviePreview: React.FC<any> = () => {
         }
     };
 
-    const [similarMovies, setSimilarMovies] = useState<any[]>([]);
+
 
     const fetchSimilarMovies = (movieID: string) => {
         const api_url = `https://api.themoviedb.org/3/movie/${movieID}/similar?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
@@ -181,21 +178,36 @@ const MoviePreview: React.FC<any> = () => {
     }, [])
 
 
-    function handleRemoveButtonClick(movieID: string, collectionRef: CollectionReference<DocumentData>) {
-        const toastId = toast.loading("removing item...")
-        removeBookmark(movieID, collectionRef)
-            .then((result) => {
-                console.log("result", result)
-                toast.dismiss(toastId)
-                console.log('Item removed successfully');
-                toast.success("Item removed successfully")
+    async function handleRemoveButtonClick(movieID: string) {
+     
+            let savedArray = [...savedMovieIDS]
+            console.log("saved", savedArray)
+            if (!firebaseAuth.currentUser?.uid) {
+                console.log("login to save a movie")
+                setShowLoginModal(true)
+            }
+            else {
+                console.log(firebaseAuth.currentUser?.uid)
+                console.log(movieID)
+                const docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieID}`
+                const index = savedArray.indexOf(movieID);
+                console.log(index)
+                if (index > -1) {
+                    const toastId = toast.loading('Loading...');
+                    await deleteDoc(doc(firestoreDB, docRef)).then(() => {
+                        toast.success("Removed from bookmarks")
+                        toast.dismiss(toastId);
+                        savedArray.splice(index, 1);
+                        setSavedMovieIDS(savedArray)
+                    }).catch(() => {
+                        toast.error('Error occured removing bookmark')
+                    });
+                    localStorage.setItem("savedMovies", JSON.stringify(savedArray))
+                }
+            }
 
-            })
-            .catch((error) => {
-                console.error('Error removing item:', error);
-                toast.dismiss(toastId)
-                toast.error('Error removing item:', error)
-            });
+        
+
     }
 
     const addToBookmark = async () => {
@@ -217,15 +229,9 @@ const MoviePreview: React.FC<any> = () => {
                 description: movieInfo.overview,
             }
             let docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieInfo.id}`
-            let collectionRef = collection(firestoreDB, `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks`);
-
-
             const LSMovies = localStorage.getItem("savedMovies") || ""
-
-
-
             if (LSMovies.includes(movieInfo.id)) {
-                handleRemoveButtonClick(movieInfo.id.toString(), collectionRef)
+                handleRemoveButtonClick(movieInfo.id)
             }
             else {
                 const toastId = toast.loading('Loading...');

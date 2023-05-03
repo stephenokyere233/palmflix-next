@@ -50,7 +50,7 @@ const LoginModal = () => {
 
     const handleEmailAndPasswordAuth = () => {
         setLoading(true)
-        if (email !== "" || password !== "") {
+        if (email !== "" && password !== "") {
             signInWithEmailAndPassword(firebaseAuth, email, password).then(async (result: UserCredential) => {
                 onAuthenticationSuccess(result.user)
                 getBookmarks()
