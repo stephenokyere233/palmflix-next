@@ -1,14 +1,12 @@
 import { img_path } from '@/constants/endpoints'
 import Image from 'next/image'
-import React, { useContext, useEffect } from 'react'
-import Link from 'next/link'
+import React, { useContext } from 'react'
 import { AppContext } from '@/context'
 import { BiBookmark, BiBookmarkHeart } from 'react-icons/bi'
 import { useRouter } from 'next/router'
 import { firebaseAuth, firestoreDB } from '@/config/firebase.config'
-import { setDoc, doc, CollectionReference, DocumentData, collection, deleteDoc } from 'firebase/firestore'
+import { setDoc, doc, deleteDoc } from 'firebase/firestore'
 import toast from 'react-hot-toast'
-import { fetchBookmarks, removeBookmark } from '@/services/bookmarks.service'
 
 type movieProps = {
     title: string,
@@ -18,7 +16,7 @@ type movieProps = {
 
 
 const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
-    const { setShowLoginModal, setSelectedMovieID, setSavedMovieIDS, savedMovieIDS, setBookmarkedMovies } = useContext(AppContext)
+    const { setShowLoginModal, setSelectedMovieID, setSavedMovieIDS, savedMovieIDS, setBookmarkedMovies, bookmarkedMovies } = useContext(AppContext)
 
 
     const router = useRouter()
@@ -27,37 +25,34 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
         setSelectedMovieID(id);
         localStorage.setItem("selectedMovieID", id);
     };
-    const getBookmarks = async () => {
-        const { movieIDS_, savedMoviesData_ } = await fetchBookmarks();
-        setSavedMovieIDS(movieIDS_);
-        // setBookmarkedMovies(savedMoviesData_);
-    };
 
     async function handleRemoveButtonClick(movieID: string) {
         let savedArray = [...savedMovieIDS]
-        console.log("saved",savedArray)
+        let bookmarks = [...bookmarkedMovies]
+        function filterById(arr: any[], id: any) {
+            return arr.filter((obj: { id: any }) => obj.id !== id);
+        }
         if (!firebaseAuth.currentUser?.uid) {
             console.log("login to save a movie")
             setShowLoginModal(true)
         }
         else {
-            console.log(firebaseAuth.currentUser?.uid)
-            console.log(movieID)
-
             const docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieID}`
             const index = savedArray.indexOf(movieID);
-            console.log(index)
             if (index > -1) {
                 const toastId = toast.loading('Loading...');
                 await deleteDoc(doc(firestoreDB, docRef)).then(() => {
                     toast.success("Removed from bookmarks")
                     toast.dismiss(toastId);
                     savedArray.splice(index, 1);
+                    bookmarks = filterById(bookmarks, movieID)
+                    setBookmarkedMovies(bookmarks)
                     setSavedMovieIDS(savedArray)
                 }).catch(() => {
                     toast.error('Error occured removing bookmark')
                 });
                 localStorage.setItem("savedMovies", JSON.stringify(savedArray))
+                localStorage.setItem("savedMoviesData", JSON.stringify(bookmarks))
             }
         }
 
@@ -84,7 +79,6 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
             let docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieID}`
 
             const LSMovies = localStorage.getItem("savedMovies") || ""
-            let collectionRef = collection(firestoreDB, `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks`);
 
             if (LSMovies.includes(movieID)) {
                 handleRemoveButtonClick(movieID)

@@ -8,7 +8,6 @@ import { AppContext } from "@/context";
 import { cloudStorage, firebaseAuth } from "@/config/firebase.config";
 import { updateProfile } from "firebase/auth";
 import { toast } from "react-hot-toast";
-import { onAuthenticationSuccess } from "@/services/auth.service";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Profile = () => {
@@ -63,7 +62,6 @@ const Profile = () => {
                             photoURL: downloadURL
                         }).then(() => {
                             toast.success("profile updated")
-
                             setLoading(false)
                         }).catch((error) => {
                             setLoading(false)
@@ -83,11 +81,6 @@ const Profile = () => {
                 toast.error(" cant update profile")
             });
         }
-
-
-
-
-
     }
 
     async function handleSubmit(event: FormEvent) {

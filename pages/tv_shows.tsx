@@ -23,7 +23,6 @@ const TVShows = () => {
         setLoading(true)
 
         axios.request(options).then(function (response) {
-            console.log(response.data);
             setMoviesData(response.data)
             setTotalPages(response.data.total_pages)
             setLoading(false)
@@ -33,7 +32,6 @@ const TVShows = () => {
         });
     }
 
-    console.log("currentPage", currentPage)
 
 
 

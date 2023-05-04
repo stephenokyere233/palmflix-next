@@ -23,7 +23,6 @@ const ComingMovies = () => {
         setLoading(true)
 
         axios.request(options).then(function (response) {
-            console.log(response.data);
             setMoviesData(response.data)
             setTotalPages(response.data.total_pages)
             setLoading(false)
@@ -32,10 +31,6 @@ const ComingMovies = () => {
             setLoading(false)
         });
     }
-
-    console.log("currentPage", currentPage)
-
-
 
     const goToNextPage = () => {
         if (currentPage <= totalPages) {
@@ -50,7 +45,6 @@ const ComingMovies = () => {
 
     useEffect(() => {
         getMovies(upcoming_movies, currentPage)
-
     }, [currentPage])
     return (
         <MoviesLayout actionNext={goToNextPage} actionPrev={goToPrevPage} title="Upcoming Movies">

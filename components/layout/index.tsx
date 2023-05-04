@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useContext, useMemo } from 'react'
+import React, { FC, useContext } from 'react'
 import Header from '../header'
 import { AppContext } from '@/context'
 import LoginModal from '../modal/login.auth'
@@ -10,7 +10,6 @@ import { DocumentData } from 'firebase/firestore'
 import { fetchBookmarks } from '@/services/bookmarks.service'
 import useLoading from "@/hooks/useLoading"
 import Loader from '../loader/Loader'
-import Sidebar from '../Nav'
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setShowUserDropdown, setBookmarkedMovies, setSavedMovieIDS, showSidebar, setShowSidebar } = useContext(AppContext)
@@ -30,15 +29,11 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         getBookmarks();
     }, [router, firebaseAuth.currentUser?.uid]);
 
-
-
     React.useEffect(() => {
         const savedMovies = localStorage.getItem("savedMovies")
-
         if (savedMovies) {
             try {
                 const parsedData = JSON.parse(savedMovies);
-                console.log("parsedData", parsedData)
                 if (Array.isArray(parsedData)) {
                     setSavedMovieIDS(parsedData);
                 }
@@ -57,8 +52,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
                 const parsedData = JSON.parse(savedMoviesData);
                 if (Array.isArray(parsedData)) {
                     setBookmarkedMovies(parsedData);
-                    console.log("setting from LS")
-                    console.log("parsed", parsedData)
                 }
             } catch (error) {
                 console.error('Error parsing stored data:', error);
@@ -73,8 +66,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
 
     const { loading } = useLoading()
 
-
-
     React.useEffect(() => {
         const keyClose = (event: KeyboardEvent) => {
             const { key } = event
@@ -83,7 +74,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
                 setShowLoginModal(false);
                 setShowUserDropdown(false)
                 setShowSidebar(false)
-
             }
         }
         window.addEventListener("keydown", keyClose)
@@ -104,13 +94,12 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         };
 
         window.addEventListener("scroll", handleScroll);
-
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
-    if (loading && router.pathname==="/") {
+    if (loading && router.pathname === "/") {
         return (
             <div className='w-full h-screen flex justify-center items-center'>
                 <Loader />

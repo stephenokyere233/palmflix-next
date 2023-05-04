@@ -27,7 +27,6 @@ export default function Home() {
     setLoading(true)
 
     axios.request(options).then(function (response) {
-      console.log(response.data);
       setMoviesData(response.data)
       setTotalPages(response.data.total_pages)
       setLoading(false)
@@ -36,10 +35,6 @@ export default function Home() {
       setLoading(false)
     });
   }
-
-  console.log("currentPage", currentPage)
-
-
 
   const goToNextPage = () => {
     if (currentPage <= totalPages) {

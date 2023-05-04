@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 const SearchResults = () => {
-    const { searchResults, searchQuery, setSearchResults, discoverMovies } = useContext(AppContext)
+    const { searchResults, searchQuery } = useContext(AppContext)
     const router = useRouter()
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages] = useState<number>(100)
@@ -27,16 +27,7 @@ const SearchResults = () => {
         if (searchQuery === "") {
             router.replace("/search?query=")
         }
-
-
     }, [])
-
-    // if (searchResults.results.length<1) {
-
-    //     return (
-    //         <div className='flex w-full h-[90vh] items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>No results found</p> </div>
-    //     )
-    // }
 
     return (
         <MoviesLayout actionNext={goToNextPage} actionPrev={goToPrevPage} title="Trending Movies">

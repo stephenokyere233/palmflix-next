@@ -9,10 +9,8 @@ import Loader from '@/components/loader/Loader';
 import { discover_movies, img_path, now_showing, top_rated, trending_movies, tv_shows, upcoming_movies } from '@/constants/endpoints';
 import { TRAILERS } from '@/constants/trailers';
 import { AppContext } from '@/context';
-import { fetchBookmarks } from '@/services/bookmarks.service';
 import axios from 'axios';
 import React, { useContext } from 'react'
-import { MdKeyboardArrowRight } from "react-icons/md"
 
 const Home = () => {
     const { discoverMovies, setDiscoverMovies, trendingMovies, setTrendingMovies, topRatedMovies, setTopRatedMovies, tvShows, setTvShows, upcomingMovies, setUpcomingMovies, showSidebar, currentMovies,setCurrentMovies } = useContext(AppContext)
@@ -64,8 +62,6 @@ const Home = () => {
                 setLoading(false)
                 setTopTrends(data.results.slice(0, 10));
                 const images = data.results.slice(0, 10).map((movie: { backdrop_path: string; }) => movie.backdrop_path);
-                const movieIDS = data.results.slice(0, 10).map((movie: any) => movie.id);
-                // setTopTrendIDS(movieIDS)
                 const imagesWithPrefix = images.map((image: any) => `${img_path}${image}`);
                 setTopTrendsImages(imagesWithPrefix);
             } catch (error) {
@@ -92,7 +88,6 @@ const Home = () => {
                 </div>
             ) : (
                 <div className=''>
-                    {/* <Sidebar /> */}
                     <TrailerSlider images={TRAILERS} autoSlideDuration={5000} />
                     <main className='min-h-screen  lg:px-10 mx-auto '>
                         <MovieSliderLayout title="top trends" movieArray={trendingMovies} link='/trending' />

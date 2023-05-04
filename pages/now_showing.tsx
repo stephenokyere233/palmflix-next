@@ -23,7 +23,6 @@ const NowShowing = () => {
         setLoading(true)
 
         axios.request(options).then(function (response) {
-            console.log(response.data);
             setMoviesData(response.data)
             setTotalPages(response.data.total_pages)
             setLoading(false)
@@ -33,14 +32,9 @@ const NowShowing = () => {
         });
     }
 
-    console.log("currentPage", currentPage)
-
-
-
     const goToNextPage = () => {
         if (currentPage <= totalPages) {
             setCurrentPage(prev => prev + 1)
-            console.log("met")
         }
     }
     const goToPrevPage = () => {
@@ -50,7 +44,6 @@ const NowShowing = () => {
 
     useEffect(() => {
         getMovies(now_showing, currentPage)
-
     }, [currentPage])
     return (
         <MoviesLayout actionNext={goToNextPage} actionPrev={goToPrevPage} title="Top Rated Movies">
