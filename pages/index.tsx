@@ -20,8 +20,7 @@ const Home = () => {
     const [topTrends, setTopTrends] = React.useState<any>([]);
     const [topTrendsImages, setTopTrendsImages] = React.useState<any>([]);
     const [loading, setLoading] = React.useState<boolean>(false)
-    const [topTrendIDS, setTopTrendIDS] = React.useState<any>([]);
-
+ 
     const getMovies = (url: string) => {
         const options = {
             method: 'GET',
@@ -66,7 +65,7 @@ const Home = () => {
                 setTopTrends(data.results.slice(0, 10));
                 const images = data.results.slice(0, 10).map((movie: { backdrop_path: string; }) => movie.backdrop_path);
                 const movieIDS = data.results.slice(0, 10).map((movie: any) => movie.id);
-                setTopTrendIDS(movieIDS)
+                // setTopTrendIDS(movieIDS)
                 const imagesWithPrefix = images.map((image: any) => `${img_path}${image}`);
                 setTopTrendsImages(imagesWithPrefix);
             } catch (error) {

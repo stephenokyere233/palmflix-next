@@ -98,6 +98,7 @@ const MoviePreview: React.FC<any> = () => {
         const api_url = `https://api.themoviedb.org/3/movie/${movieID}/similar?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
         axios.get(api_url)
             .then((response) => {
+                console.log("similar result", response.data.results)
                 setSimilarMovies(response.data.results);
             })
             .catch((error) => {
@@ -150,7 +151,6 @@ const MoviePreview: React.FC<any> = () => {
                     trailer.type === 'Trailer' || trailer.name.includes('Official' || "official")
             );
             setShowPlayer(true)
-            console.log(filteredTrailers)
             setTrailers(filteredTrailers);
 
         } catch (error) {

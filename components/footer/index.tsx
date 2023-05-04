@@ -60,11 +60,11 @@ const Footer = () => {
                 </section>
                 <div className="sm:text-md mx-auto mt-10  flex h-20 items-center justify-between border-t text-sm md:text-lg lg:text-xl">
                     <span>
-                        Copyright © 2023 | <span className="text-pink">TRAILERS HOME</span>
+                        Copyright © 2023 | <span className="text-brand">TRAILERS HOME</span>
                     </span>
                     <span>
                         Designed By{" "}
-                        <Link href="https://twitter.com/dev__steve" className=" text-pink">
+                        <Link href="https://twitter.com/dev__steve" className=" text-brand">
                             dev_steve
                         </Link>
                     </span>

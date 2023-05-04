@@ -14,6 +14,8 @@ type NRInputProps = {
     max?: number
     className?: string
     styles?: string
+    isRequired:boolean
+    isDisabled?:boolean
 }
 
 const NRInput: React.FC<NRInputProps> = ({
@@ -29,6 +31,8 @@ const NRInput: React.FC<NRInputProps> = ({
     max,
     className,
     styles,
+    isRequired,
+    isDisabled
 }) => {
     return (
         <fieldset
@@ -49,10 +53,11 @@ const NRInput: React.FC<NRInputProps> = ({
                 tabIndex={0}
                 min={min}
                 max={max}
+                disabled={isDisabled}
                 maxLength={maxLength}
                 autoCapitalize="none"
                 onChange={onChange}
-                required
+                required={isRequired}
                 className={`w-full bg-transparent pb-2 indent-2 outline-none ${styles ?? ''}`}
             />
         </fieldset>

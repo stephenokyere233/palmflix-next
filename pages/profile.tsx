@@ -1,13 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ChangeEvent, useContext, useEffect } from "react";
+import React, { ChangeEvent, FormEvent, useContext, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MdArrowBackIosNew } from "react-icons/md";
 import NRInput from "@/components/NRInput";
 import { AppContext } from "@/context";
-import { firebaseAuth } from "@/config/firebase.config";
+import { cloudStorage, firebaseAuth } from "@/config/firebase.config";
 import { updateProfile } from "firebase/auth";
 import { toast } from "react-hot-toast";
+import { onAuthenticationSuccess } from "@/services/auth.service";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Profile = () => {
     const [updateForm, setUpdateForm] = React.useState<{ profile: string | null, name: string, email: string }>({
@@ -16,6 +18,9 @@ const Profile = () => {
         email: "",
     });
 
+    const [file, setFile] = React.useState<any>(null)
+    const [loading, setLoading] = React.useState<boolean>(false)
+
     const { authenticatedUser } = useContext(AppContext)
 
     useEffect(() => {
@@ -23,11 +28,10 @@ const Profile = () => {
             ...prev,
             name: authenticatedUser?.displayName || "",
             email: authenticatedUser?.email,
-            profile: authenticatedUser?.profileURL || ""
+            profile: authenticatedUser?.photoURL || ""
 
         }));
-
-    }, [])
+    }, [authenticatedUser])
 
 
     const controlUpdateForm = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,53 +42,60 @@ const Profile = () => {
             [name]: value,
         }));
     };
- 
+
+    console.log(updateForm)
+
     const updateUserData = () => {
         if (!firebaseAuth.currentUser) return
-        updateProfile(firebaseAuth.currentUser, {
-            displayName: updateForm.name, photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then(() => {
-            toast.success("profile updated")
-            // Profile updated!
-            // ...
-        }).catch((error) => {
-            // An error occurred
-            // ...
-        });
+
+        if (file) {
+
+            const storageRef = ref(cloudStorage, `${name}.jpg`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on('state_changed',
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        console.log('File available at', downloadURL);
+                        if (!firebaseAuth.currentUser) return
+                        await updateProfile(firebaseAuth.currentUser, {
+                            displayName: updateForm.name,
+                            photoURL: downloadURL
+                        }).then(() => {
+                            toast.success("profile updated")
+
+                            setLoading(false)
+                        }).catch((error) => {
+                            setLoading(false)
+                            toast.error("profile cant updated")
+                        });
+                    });
+                }
+            );
+
+        }
+        else {
+            updateProfile(firebaseAuth.currentUser, {
+                displayName: updateForm.name
+            }).then(() => {
+                toast.success("profile updated")
+            }).catch((error) => {
+                toast.error(" cant update profile")
+            });
+        }
+
+
+
+
+
     }
 
-    // async function handleSubmit(event) {
-    //     event.preventDefault();
-    //     await sendNewProfileInfo(userData._id, updateForm)
-    //     console.log(updateForm);
-    // }
-    // const { userData } = useContext(AppContext);
+    async function handleSubmit(event: FormEvent) {
+        event.preventDefault();
+        updateUserData()
+        console.log(updateForm);
+    }
 
-    // React.useEffect(() => {
-    //     if (!userData) return;
-
-    //     setUpdateForm({
-    //         name: userData.name,
-    //         email: userData.email,
-    //         phone: userData.phone,
-    //         profile: userData.profile ? userData.profile : "",
-    //     });
-    // }, [userData]);
-
-    const handleImageUpload = (event: any) => {
-        const image = event.target.files[0];
-        if (!image) return;
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-            setUpdateForm((prev) => ({
-                ...prev,
-                profile: reader.result as string,
-            }));
-        };
-
-        reader.readAsDataURL(image);
-    };
 
     return (
         <section className="w-full flex items-center justify-center flex-1 h-[90vh]">
@@ -111,7 +122,7 @@ const Profile = () => {
                 </div>
 
                 <Image
-                    src={updateForm.profile ? updateForm?.profile : "/user1.png"}
+                    src={updateForm.profile ? updateForm.profile : "/user1.png"}
                     className={`h-32 w-32 rounded-full bg-contain object-cover ${!updateForm.profile && "bg-brand"}`}
                     alt="profile_image"
                     height={500}
@@ -120,13 +131,17 @@ const Profile = () => {
 
                 <form className="flex flex-col gap-4 w-[90%]"
 
-                // onSubmit={handleSubmit}
+                    onSubmit={handleSubmit}
                 >
                     <NRInput
                         title="Avatar"
                         name="profile"
                         type="file"
-                        onChange={handleImageUpload}
+                        onChange={(e) => {
+                            e.target.files &&
+                                setFile(e.target.files[0])
+                        }}
+                        isRequired={false}
                     />
                     <NRInput
                         title="Name"
@@ -136,11 +151,15 @@ const Profile = () => {
                         placeholder="Your name"
                         onChange={controlUpdateForm}
                         value={updateForm.name}
+                        isRequired={false}
+
                     />
                     <NRInput
+                        isRequired={false}
                         title="Email"
                         name="email"
                         type="email"
+                        isDisabled={true}
                         value={updateForm.email}
                         autoComplete="email"
                         onChange={controlUpdateForm}
@@ -148,7 +167,7 @@ const Profile = () => {
                     />
                     <div className="pt-2">
                         <button className=" w-full text-xl p-3 rounded-md bg-brand">
-                            Update Profile
+                            {loading?"updating...":" Update Profile"}
                         </button>
                     </div>
                 </form>

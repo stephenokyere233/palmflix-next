@@ -41,7 +41,7 @@ const ImageSlider: FC<{ images: string[], autoSlideDuration: number, data?: any 
 
     return (
         <div className="relative my-10  bg-black overflow-hidden h-[700px] rounded-lg ">
-            <Image onClick={() => handleImageClick(data[index]?.id)} src={images[index]} alt={`Image ${index + 1}`} className='w-full h-full object-cover transition-all duration-1000 delay-75 ease-in-out transform opacity-40 cursor-pointer' width={3000} height={3000} />
+            <Image onClick={() => handleImageClick(data[index]?.id)} src={images[index] ? images[index] : "/no_preview.jpg"} alt={`Image ${index + 1}`} className='w-full h-full object-cover transition-all duration-1000 delay-75 ease-in-out transform opacity-40 cursor-pointer' width={3000} height={3000} />
 
             <div className='mx-2 pl-20 absolute bottom-10 text-white'>
                 <h2 className='text-4xl font-bold '>

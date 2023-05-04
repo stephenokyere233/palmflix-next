@@ -124,13 +124,13 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
     return (
         <div>
             <div style={{ background: "rgba(169, 169, 169, 0.2)" }} className='max-w-[350px] rounded-md w-[280px] h-[400px] p-2 cursor-pointer ' onClick={handleCardClick}>
-                <Image src={img_path + imageURL || "/no_preview.jpg"} alt={title} width={300} height={300} className='h-[85%] object-cover rounded-md  bg-gray-400' />
+                <Image src={imageURL ? (img_path + imageURL) : "/no_preview.jpg"} alt={title} width={300} height={300} className='h-[85%] object-cover rounded-md  bg-gray-400' />
                 <div className='flex justify-between p-2 items-center'>
                     <p className='w-[90%] max-lines-2'>
                         {title}
                     </p>
                     {
-                        Array.from(savedMovieIDS).includes(movieID) ? <BiBookmarkHeart size={28} className='text-green-400' /> : <BiBookmark size={28} />
+                        savedMovieIDS.includes(movieID) ? <BiBookmarkHeart size={28} className='text-green-400' /> : <BiBookmark size={28} />
                     }
                 </div>
             </div>
