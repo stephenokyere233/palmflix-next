@@ -20,31 +20,52 @@ export const AppProvider = ({ children }) => {
     const [bookmarkedMovies, setBookmarkedMovies] = useState([])
     const [showSidebar, setShowSidebar] = useState(false)
     const [currentMovies, setCurrentMovies] = useState([])
+    const [showReviewModal,setShowReviewModal]=useState(false)
 
 
     return (
-        <AppContext.Provider
-            value={{
-                selectedMovieID, setSelectedMovieID,
-                showLoginModal, setShowLoginModal,
-                showSignupModal, setShowSignupModal,
-                searchQuery, setSearchQuery,
-                searchResults, setSearchResults,
-                discoverMovies, setDiscoverMovies,
-                trendingMovies, setTrendingMovies,
-                tvShows, setTvShows,
-                topRatedMovies, setTopRatedMovies,
-                showUserDropdown, setShowUserDropdown,
-                authenticatedUser, setAuthenticatedUser,
-                savedMovieIDS, setSavedMovieIDS,
-                bookmarkedMovies, setBookmarkedMovies,
-                upcomingMovies, setUpcomingMovies,
-                currentMovies, setCurrentMovies,
-                showSidebar, setShowSidebar
-            }}
-        >
-            {children}
-        </AppContext.Provider>
+      <AppContext.Provider
+        value={{
+          selectedMovieID,
+          setSelectedMovieID,
+          showLoginModal,
+          setShowLoginModal,
+          showSignupModal,
+          setShowSignupModal,
+          searchQuery,
+          setSearchQuery,
+          searchResults,
+          setSearchResults,
+          discoverMovies,
+          setDiscoverMovies,
+          trendingMovies,
+          setTrendingMovies,
+          tvShows,
+          setTvShows,
+          topRatedMovies,
+          setTopRatedMovies,
+          showUserDropdown,
+          setShowUserDropdown,
+          authenticatedUser,
+          setAuthenticatedUser,
+          savedMovieIDS,
+          setSavedMovieIDS,
+          bookmarkedMovies,
+          setBookmarkedMovies,
+          upcomingMovies,
+          setUpcomingMovies,
+          currentMovies,
+          setCurrentMovies,
+          showSidebar,
+          setShowSidebar,
+          showReviewModal,
+          setShowReviewModal,
+          // reviews,
+          // setReviews
+        }}
+      >
+        {children}
+      </AppContext.Provider>
     );
 };
 

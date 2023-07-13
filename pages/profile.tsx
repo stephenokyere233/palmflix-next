@@ -94,14 +94,14 @@ const Profile = () => {
         <section className="w-full flex items-center justify-center flex-1 h-[90vh]">
             <div className="w-[500px] flex flex-col items-center p-4 px-8 rounded-md">
                 <Link
-                    href={""}
+                    href={"/"}
                     className="hidden w-full items-center md:flex"
                 >
                     <MdArrowBackIosNew size={20} className="my-2" />
                     <p className="opacity-70">Back</p>
                 </Link>
                 <Link
-                    href={""}
+                    href={"/"}
                     className="absolute top-24 left-2 flex w-full items-center md:hidden"
                 >
                     <MdArrowBackIosNew size={20} className="my-2" />
