@@ -1,4 +1,4 @@
-import { FaBars, FaFire, FaHome, FaSearch, FaTv } from "react-icons/fa"
+import { FaFire, FaHome, FaTv } from "react-icons/fa"
 import { BiMovie,BiBookBookmark } from "react-icons/bi"
 import { MdShowChart } from "react-icons/md"
 export const TABS = [
@@ -34,3 +34,84 @@ export const TABS = [
         route: "/bookmarks"
     },
 ]
+
+export const GENRE = {
+  genres: [
+    {
+      id: 28,
+      name: "Action",
+    },
+    {
+      id: 12,
+      name: "Adventure",
+    },
+    {
+      id: 16,
+      name: "Animation",
+    },
+    {
+      id: 35,
+      name: "Comedy",
+    },
+    {
+      id: 80,
+      name: "Crime",
+    },
+    {
+      id: 99,
+      name: "Documentary",
+    },
+    {
+      id: 18,
+      name: "Drama",
+    },
+    {
+      id: 10751,
+      name: "Family",
+    },
+    {
+      id: 14,
+      name: "Fantasy",
+    },
+    {
+      id: 36,
+      name: "History",
+    },
+    {
+      id: 27,
+      name: "Horror",
+    },
+    {
+      id: 10402,
+      name: "Music",
+    },
+    {
+      id: 9648,
+      name: "Mystery",
+    },
+    {
+      id: 10749,
+      name: "Romance",
+    },
+    {
+      id: 878,
+      name: "Science Fiction",
+    },
+    {
+      id: 10770,
+      name: "TV Movie",
+    },
+    {
+      id: 53,
+      name: "Thriller",
+    },
+    {
+      id: 10752,
+      name: "War",
+    },
+    {
+      id: 37,
+      name: "Western",
+    },
+  ],
+};

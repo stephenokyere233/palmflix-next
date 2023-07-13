@@ -2,21 +2,21 @@
 import CastCard from "@/components/Cards/CastCard";
 import MovieCard from "@/components/Cards/MovieCard";
 import ReviewCard from "@/components/Cards/ReviewCard";
-// import UserReview from "@/components/UserReviews";
+import Slider from "react-slick";
 import Loader from "@/components/loader/Loader";
 import ReviewModal from "@/components/modal/review.modal";
 import YouTubePlayer from "@/components/ytplayer";
 import { firebaseAuth, firestoreDB } from "@/config/firebase.config";
+import { SLIDER_CONFIG } from "@/config/slider.config";
 import { img_path } from "@/constants/endpoints";
 import { AppContext } from "@/context";
-import { IReview, Review } from "@/interfaces";
+import {  Review } from "@/interfaces";
 import axios from "axios";
 import {
   setDoc,
   doc,
   deleteDoc,
   collection,
-  getDocs,
   query,
   where,
   onSnapshot,
@@ -63,13 +63,13 @@ const MoviePreview: React.FC<any> = () => {
     });
   };
 
-  const deleteReview = async (docID:string,movieID:string) => {
+  const deleteReview = async (docID: string, movieID: string) => {
     const docRef = `user_reviews/${docID}`;
     const toastId = toast.loading("Loading...");
     await deleteDoc(doc(firestoreDB, docRef))
       .then(() => {
         toast.success("Review deleted");
-        getUserReviews(movieID)
+        getUserReviews(movieID);
         toast.dismiss(toastId);
       })
       .catch(() => {
@@ -216,13 +216,12 @@ const MoviePreview: React.FC<any> = () => {
     localStorage.setItem("selectedMovieID", movieID?.toString() as string);
   }, [router]);
 
-  useEffect(()=>{
-    if(!selectedMovieID){
-      const id=localStorage.getItem("selectedMovieID")
-      setSelectedMovieID(id)
+  useEffect(() => {
+    if (!selectedMovieID) {
+      const id = localStorage.getItem("selectedMovieID");
+      setSelectedMovieID(id);
     }
-
-  },[])
+  }, []);
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
@@ -294,9 +293,6 @@ const MoviePreview: React.FC<any> = () => {
       toast.error("Login to save a movie");
       setShowLoginModal(true);
     } else {
-      console.log(firebaseAuth.currentUser?.uid);
-      console.log(movieInfo);
-
       const movieToSave = {
         title: movieInfo.title || movieInfo.name,
         id: movieInfo.id,
@@ -343,7 +339,6 @@ const MoviePreview: React.FC<any> = () => {
   }
 
   return (
-    // movieInfo && (
     <>
       {showPlayer && (
         <YouTubePlayer
@@ -401,9 +396,11 @@ const MoviePreview: React.FC<any> = () => {
           </div>
           <div className="flex items-center gap-4">
             <button
-              className="border p-2"
-              onClick={() =>{
-                !firebaseAuth.currentUser?.uid?setShowLoginModal(true): setShowReviewModal(true)
+              className="p-2 px-4 rounded-md bg-brand text-white"
+              onClick={() => {
+                !firebaseAuth.currentUser?.uid
+                  ? setShowLoginModal(true)
+                  : setShowReviewModal(true);
               }}
             >
               Leave a review
@@ -437,7 +434,8 @@ const MoviePreview: React.FC<any> = () => {
           <h2 className="my-10 text-center text-2xl font-semibold text-brand">
             Movie Reviews
           </h2>
-          <div className="mb-10 grid gap-10 md:grid-cols-2">
+          <div className="mb-10">
+          <Slider {...SLIDER_CONFIG} className="gap-20">
             {[
               ...reviews,
               ...userReviews.filter(
@@ -452,8 +450,8 @@ const MoviePreview: React.FC<any> = () => {
                   content={content}
                   created_at={created_at}
                   uid={review.uid}
-                  type={review.type}    
-                  removeReview={() => deleteReview(review.id,selectedMovieID)}
+                  type={review.type}
+                  removeReview={() => deleteReview(review.id, selectedMovieID)}
                   id={review.id}
                 />
               ) : (
@@ -466,8 +464,8 @@ const MoviePreview: React.FC<any> = () => {
                 />
               );
             })}
+          </Slider>
           </div>
-          {/* <UserReview/> */}
         </div>
 
         <section className="">

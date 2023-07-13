@@ -21,29 +21,22 @@ const MoviesLayout: React.FC<moviesLayoutProps> = ({ children, currentPage, tota
     const router = useRouter()
 
     return (
-        <section className="flex flex-1 h-[91vh]">
-            <Sidebar />
-            <main className=" flex flex-col flex-1">
-                <header className="h-16 flex items-center justify-between lg:px-20">
-                    <MdKeyboardArrowLeft size={28} onClick={actionPrev} />
-                    <h3 className="text-xl">
-                        {title}
-                    </h3>
-                    <MdKeyboardArrowRight size={28} onClick={actionNext} />
-                </header>
-                <section className=" p-4 h-[80vh] flex-1 overflow-y-scroll">
-                    <div className=" flex justify-center  px-6  gap-6 gap-y-10 flex-wrap h-full items-center">
-
-                        {
-                            children
-                        }
-                    </div>
-
-                </section>
-            </main>
-        </section>
-
-    )
+      <section className="flex flex-1 h-[91vh]">
+        <Sidebar />
+        <main className=" flex flex-col flex-1">
+          <header className="h-16 flex items-center justify-between lg:px-20 cursor-pointer">
+            <MdKeyboardArrowLeft size={28} onClick={actionPrev} />
+            <h3 className="text-xl">{title}</h3>
+            <MdKeyboardArrowRight size={28} onClick={actionNext} />
+          </header>
+          <section className=" p-4 h-[80vh] flex-1 overflow-y-scroll">
+            <div className=" flex justify-center  px-6  gap-6 gap-y-10 flex-wrap h-full items-center ">
+              {children}
+            </div>
+          </section>
+        </main>
+      </section>
+    );
 }
 
 export default MoviesLayout

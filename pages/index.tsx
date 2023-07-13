@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import MovieCard from '@/components/Cards/MovieCard';
-import Sidebar from '@/components/Nav';
 import ImageSlider from '@/components/Slider/ImageSlider'
 import TrailerSlider from '@/components/Slider/TrailerSlider';
 import Footer from '@/components/footer';
@@ -19,15 +17,15 @@ const Home = () => {
     const [topTrendsImages, setTopTrendsImages] = React.useState<any>([]);
     const [loading, setLoading] = React.useState<boolean>(false)
  
-    const getMovies = (url: string) => {
+    const getMovies = async(url: string) => {
+        // setLoading(true)
         const options = {
             method: 'GET',
             url: url,
             params: { api_key: process.env.NEXT_PUBLIC_TMDB_API_KEY, language: 'en-US', page: 1 }
         };
-        setLoading(true)
 
-        axios.request(options).then(function (response) {
+       await axios.request(options).then(function (response) {
             if (url.includes(discover_movies)) {
                 setDiscoverMovies(response.data.results)
             }
@@ -45,6 +43,16 @@ const Home = () => {
             }
             else if(url.includes(now_showing)){
                 setCurrentMovies(response.data.results)
+                 setTopTrends(response.data.results.slice(0, 10));
+                 const images = response.data.results
+                   .slice(0, 10)
+                   .map(
+                     (movie: { backdrop_path: string }) => movie.backdrop_path,
+                   );
+                 const imagesWithPrefix = images.map(
+                   (image: any) => `${img_path}${image}`,
+                 );
+                 setTopTrendsImages(imagesWithPrefix);
             }
             setLoading(false)
         }).catch(function (error) {
@@ -54,30 +62,12 @@ const Home = () => {
     }
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true)
-            try {
-                const response = await fetch(now_showing);
-                const data = await response.json();
-                setLoading(false)
-                setTopTrends(data.results.slice(0, 10));
-                const images = data.results.slice(0, 10).map((movie: { backdrop_path: string; }) => movie.backdrop_path);
-                const imagesWithPrefix = images.map((image: any) => `${img_path}${image}`);
-                setTopTrendsImages(imagesWithPrefix);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         getMovies(discover_movies)
         getMovies(trending_movies)
         getMovies(top_rated)
         getMovies(upcoming_movies)
         getMovies(now_showing)
         getMovies(tv_shows)
-        fetchData();
     }, []);
 
     return (
