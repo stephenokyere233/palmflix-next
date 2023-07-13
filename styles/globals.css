@@ -179,5 +179,5 @@ body::-webkit-scrollbar,
 .slick-next:before,
 .slick-prev:before {
   /* content: "→"; Change content here */
-  @apply bg-brand rounded-full;
+  @apply bg-brand rounded-full hidden md:block;
 }

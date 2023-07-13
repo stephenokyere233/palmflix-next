@@ -1,38 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AppContext } from "@/context";
 import React, { useContext } from "react";
-import { FcGoogle } from "react-icons/fc";
-import {
-  GoogleAuthProvider,
-  UserCredential,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
 import { firebaseAuth, firestoreDB } from "@/config/firebase.config";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
-import { onAuthenticationSuccess } from "@/services/auth.service";
 import ModalLayout from "../layout/ModalLayout";
 import { BiX } from "react-icons/bi";
-import { fetchBookmarks } from "@/services/bookmarks.service";
 import { setDoc, doc } from "firebase/firestore";
 
-const googleProvider = new GoogleAuthProvider();
 
 const ReviewModal = () => {
-  const router = useRouter();
   const [comment, setComment] = React.useState<string>("");
-  const [errorMessage, setErrorMessage] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const {
-    setShowSignupModal,
-    setShowLoginModal,
-    setBookmarkedMovies,
-    showReviewModal,
     selectedMovieID,
     setShowReviewModal,
-    setSavedMovieIDS,
   } = useContext(AppContext);
 
   const addReview = async (movieID: string) => {
@@ -73,7 +56,7 @@ const ReviewModal = () => {
     <ModalLayout onHideModal={() => setShowReviewModal(false)}>
       <section className=" flex w-full min-w-[350px] flex-col items-center justify-center gap-4 p-2 ">
         <BiX
-          className="absolute right-10 top-6 cursor-pointer text-black"
+          className="absolute right-10 top-6 cursor-pointer"
           onClick={() => setShowReviewModal(false)}
           size={28}
         />
@@ -90,9 +73,9 @@ const ReviewModal = () => {
             }}
           ></textarea>
         </div>
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <button
-          className="flex w-full items-center justify-center gap-2 rounded-md border bg-[#2221] p-2 text-center"
+          style={{ background: "rgba(169, 169, 169, 0.2)" }}
+          className="flex w-full items-center justify-center gap-2 rounded-md  p-2 text-center"
           onClick={() => addReview(selectedMovieID)}
         >
           {loading ? "Loading..." : "Submit Review"}

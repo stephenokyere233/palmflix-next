@@ -50,7 +50,7 @@ const SignUpModal = () => {
     <ModalLayout onHideModal={() => setShowLoginModal(false)}>
       <section className="relative p-2 w-full flex flex-col gap-4 justify-center items-center min-w-[350px]">
         <BiX
-          className="absolute top-6 right-4 text-black cursor-pointer"
+          className="absolute top-6 right-4 cursor-pointer"
           onClick={() => setShowSignupModal(false)}
         />
         <h1 className="text-2xl uppercase">Signup</h1>

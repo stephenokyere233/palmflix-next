@@ -1,11 +1,11 @@
 export const SLIDER_CONFIG = {
-  infinite: false,
   speed: 500,
   slidesToShow: 2,
   slidesToScroll: 2,
   initialSlide: 0,
-  rows:2,
-  autoplay:true,
+  rows: 2,
+  autoplay: true,
+  infinite: true,
   responsive: [
     {
       breakpoint: 1024,

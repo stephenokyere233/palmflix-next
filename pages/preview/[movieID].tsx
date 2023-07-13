@@ -32,6 +32,7 @@ const MoviePreview: React.FC<any> = () => {
   const [movieCastInfo, setMovieCastInfo] = useState<any>(null);
   const [dataType, setDataType] = useState<string>("movie");
   const [loading, setLoading] = useState(true);
+  const [error,setError]=useState(false)
   const router = useRouter();
   const {
     setSelectedMovieID,
@@ -144,8 +145,10 @@ const MoviePreview: React.FC<any> = () => {
       }
 
       setLoading(false);
+      setError(false)
     } catch (error) {
       console.error(error);
+      setError(true)
       setLoading(false);
     }
   };
@@ -329,7 +332,7 @@ const MoviePreview: React.FC<any> = () => {
       </div>
     );
   }
-  if (!movieInfo) {
+  if (error || !movieInfo) {
     return (
       <div className="flex  h-[90vh] w-full flex-1 flex-col items-center justify-center">
         <Image src="/error.png" alt="error" width={450} height={450} />
@@ -379,7 +382,7 @@ const MoviePreview: React.FC<any> = () => {
             <div className="flex h-[120px] w-[150px] items-center justify-center border text-3xl font-bold text-brand">
               {movieInfo.vote_average.toFixed(1)}
             </div>
-            <div>
+            <div className="text-sm md:text-lg">
               <div className="flex gap-2">
                 <p className="font-bold text-brand">Status:</p>
                 <p>{movieInfo.status}</p>
@@ -396,7 +399,7 @@ const MoviePreview: React.FC<any> = () => {
           </div>
           <div className="flex items-center gap-4">
             <button
-              className="p-2 px-4 rounded-md bg-brand text-white"
+              className="p-2 md:px-4 rounded-md bg-brand text-white text-sm md:text-lg"
               onClick={() => {
                 !firebaseAuth.currentUser?.uid
                   ? setShowLoginModal(true)
@@ -408,7 +411,7 @@ const MoviePreview: React.FC<any> = () => {
 
             {savedMovieIDS?.includes(movieInfo.id) ? (
               <div
-                className="flex cursor-pointer gap-3 text-green-400 "
+                className="flex cursor-pointer gap-3 text-green-400  text-sm md:text-lg "
                 onClick={addToBookmark}
               >
                 <p>Saved</p>
@@ -416,10 +419,10 @@ const MoviePreview: React.FC<any> = () => {
               </div>
             ) : (
               <div
-                className="flex cursor-pointer gap-3"
+                className="flex cursor-pointer gap-3 text-sm md:text-lg "
                 onClick={addToBookmark}
               >
-                <p className="text-lg">Add to saved Trailers</p>
+                <p className="">Add to saved Trailers</p>
                 <BiBookmark size={24} />
               </div>
             )}
@@ -435,36 +438,39 @@ const MoviePreview: React.FC<any> = () => {
             Movie Reviews
           </h2>
           <div className="mb-10">
-          <Slider {...SLIDER_CONFIG} className="gap-20">
-            {[
-              ...reviews,
-              ...userReviews.filter(
-                (review) => review.movieID === selectedMovieID,
-              ),
-            ].map((review) => {
-              const { author_details, content, created_at, id, type } = review;
-              return type === "user" ? (
-                <ReviewCard
-                  key={id}
-                  username={review.username}
-                  content={content}
-                  created_at={created_at}
-                  uid={review.uid}
-                  type={review.type}
-                  removeReview={() => deleteReview(review.id, selectedMovieID)}
-                  id={review.id}
-                />
-              ) : (
-                <ReviewCard
-                  key={id}
-                  username={author_details.username}
-                  content={content}
-                  created_at={created_at}
-                  id={id}
-                />
-              );
-            })}
-          </Slider>
+            <Slider {...SLIDER_CONFIG} className="gap-20">
+              {[
+                ...reviews,
+                ...userReviews.filter(
+                  (review) => review.movieID === selectedMovieID,
+                ),
+              ].map((review) => {
+                const { author_details, content, created_at, id, type } =
+                  review;
+                return type === "user" ? (
+                  <ReviewCard
+                    key={id}
+                    username={review.username}
+                    content={content}
+                    created_at={created_at}
+                    uid={review.uid}
+                    type={review.type}
+                    removeReview={() =>
+                      deleteReview(review.id, selectedMovieID)
+                    }
+                    id={review.id}
+                  />
+                ) : (
+                  <ReviewCard
+                    key={id}
+                    username={author_details.username}
+                    content={content}
+                    created_at={created_at}
+                    id={id}
+                  />
+                );
+              })}
+            </Slider>
           </div>
         </div>
 

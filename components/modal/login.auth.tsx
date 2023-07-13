@@ -85,7 +85,7 @@ const LoginModal = () => {
         <ModalLayout onHideModal={() => setShowLoginModal(false)}>
 
             <section className=' p-2 w-full flex flex-col gap-4 justify-center items-center min-w-[350px] '>
-                <BiX className='absolute top-6 right-10 text-black cursor-pointer' onClick={() => setShowLoginModal(false)} size={28} />
+                <BiX className='absolute top-6 right-10 cursor-pointer' onClick={() => setShowLoginModal(false)} size={28} />
                 <h1 className='text-2xl uppercase'>Login</h1>
                 <div className='flex w-full  flex-col'>
                     <label htmlFor="email">Email</label>

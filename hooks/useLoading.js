@@ -6,7 +6,7 @@ function useLoading() {
 
     useEffect(() => {
         const handleStart = () => setLoading(true);
-        const handleComplete = () => setTimeout(() => setLoading(false), 700);
+        const handleComplete = () => setTimeout(() => setLoading(false), 1000);
 
 
         Router.events.on("routeChangeStart", handleStart);

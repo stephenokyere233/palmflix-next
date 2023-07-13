@@ -30,7 +30,7 @@ const UserDropDown = () => {
         <ModalLayout onHideModal={() => setShowUserDropdown(false)}>
 
             <h2 className='mb-4'>MENU</h2>
-            <BiX className='absolute top-6 right-10 text-black cursor-pointer' onClick={() => setShowUserDropdown(false)} size={28} />
+            <BiX className='absolute top-6 right-10  cursor-pointer' onClick={() => setShowUserDropdown(false)} size={28} />
 
             <div
                 style={{ background: "rgba(169, 169, 169, 0.2)" }}

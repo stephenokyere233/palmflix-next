@@ -38,7 +38,10 @@ const UserReviewCard: FC<any> = ({
           )}
         </div>
       </div>
-      <p className={content.length > 40 ? "max-lines-4" : ""}>{content}</p>
+      <p
+        dangerouslySetInnerHTML={{ __html: content }}
+        className={content.length > 35 ? "max-lines-4" : ""}
+      />
       <span className="my-2 flex w-full justify-end  text-gray-300">
         {formatDate(created_at)}
       </span>
