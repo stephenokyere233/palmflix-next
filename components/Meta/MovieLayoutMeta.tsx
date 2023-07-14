@@ -4,7 +4,7 @@ import React, { FC } from "react";
 const MovieLayoutMeta:FC<{title:string}> = ({title}) => {
   return (
     <Head>
-      <title>{`Trailers Home - ${title}`}-Trailers Home </title>
+      <title>{`Trailers Home - ${title}`}</title>
       <meta name="title" content={`Trailers Home - ${title}`} />
       <meta
         name="description"
@@ -20,7 +20,7 @@ const MovieLayoutMeta:FC<{title:string}> = ({title}) => {
       />
       <meta
         property="og:image"
-        content="https://metatags.io/images/meta-tags.png"
+        content="https://res.cloudinary.com/devsteveserver/image/upload/v1689327058/palmflix_a6d4fo.png"
       />
 
       <meta property="twitter:card" content="summary_large_image" />
@@ -32,7 +32,7 @@ const MovieLayoutMeta:FC<{title:string}> = ({title}) => {
       />
       <meta
         property="twitter:image"
-        content="https://metatags.io/images/meta-tags.png"
+        content="https://res.cloudinary.com/devsteveserver/image/upload/v1689327058/palmflix_a6d4fo.png"
       />
     </Head>
   );

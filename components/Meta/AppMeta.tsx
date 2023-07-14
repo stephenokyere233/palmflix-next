@@ -20,7 +20,7 @@ const AppMeta = () => {
       />
       <meta
         property="og:image"
-        content="https://metatags.io/images/meta-tags.png"
+        content="https://res.cloudinary.com/devsteveserver/image/upload/v1689327058/palmflix_a6d4fo.png"
       />
 
       <meta property="twitter:card" content="summary_large_image" />
@@ -32,7 +32,7 @@ const AppMeta = () => {
       />
       <meta
         property="twitter:image"
-        content="https://metatags.io/images/meta-tags.png"
+        content="https://res.cloudinary.com/devsteveserver/image/upload/v1689327058/palmflix_a6d4fo.png"
       />
     </Head>
   );
