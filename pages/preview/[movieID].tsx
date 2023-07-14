@@ -25,7 +25,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { BiBookmark } from "react-icons/bi";
+import { BiBookmark, BiShareAlt } from "react-icons/bi";
+import ShareModal from "@/components/modal/share.modal";
+import MovieMeta from "@/components/Meta/MovieMeta";
 
 const MoviePreview: React.FC<any> = () => {
   const [movieInfo, setMovieInfo] = useState<any>(null);
@@ -42,6 +44,8 @@ const MoviePreview: React.FC<any> = () => {
     setSavedMovieIDS,
     showReviewModal,
     setShowReviewModal,
+    showShareModal,
+    setShowShareModal,
   } = useContext(AppContext);
   const [trailers, setTrailers] = useState<any>([]);
   const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
@@ -50,6 +54,7 @@ const MoviePreview: React.FC<any> = () => {
   const [reviews, setReviews] = useState<any[]>([]);
   const [userReviews, setUserReviews] = useState<Review[]>([]);
 
+  
   const getUserReviews = async (movieID: string) => {
     const reviews_: Review[] = [];
     let collectionRef = collection(firestoreDB, "user_reviews");
@@ -225,6 +230,7 @@ const MoviePreview: React.FC<any> = () => {
       setSelectedMovieID(id);
     }
   }, []);
+  console.log("movieINfo",movieInfo)
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
@@ -343,6 +349,13 @@ const MoviePreview: React.FC<any> = () => {
 
   return (
     <>
+      <MovieMeta
+        image={`${
+          img_path + (movieInfo.backdrop_path || movieInfo.poster_path)
+        }`}
+        title={movieInfo.title}
+        description={movieInfo.overview}
+      />
       {showPlayer && (
         <YouTubePlayer
           videoId={trailers[0].key}
@@ -350,6 +363,7 @@ const MoviePreview: React.FC<any> = () => {
         />
       )}
       {showReviewModal && <ReviewModal />}
+      {showShareModal && <ShareModal />}
       <div className="mx-auto mb-10 w-screen bg-[#040720] p-4 md:w-[90rem] ">
         <header
           className="relative h-[500px]  w-full rounded-md bg-cover bg-no-repeat"
@@ -426,6 +440,11 @@ const MoviePreview: React.FC<any> = () => {
                 <BiBookmark size={24} />
               </div>
             )}
+            <BiShareAlt
+              size={28}
+              className="cursor-pointer"
+              onClick={() => setShowShareModal(true)}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-4 py-6 md:flex-row md:px-10">

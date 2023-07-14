@@ -10,7 +10,7 @@ const nextConfig = {
       "firebasestorage.googleapis.com",
       "secure.gravatar.com",
     ],
-    // unoptimized: true
+    unoptimized: true
   },
 };
 
