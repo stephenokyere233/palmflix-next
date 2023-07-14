@@ -7,6 +7,7 @@ import MovieCard from '../Cards/MovieCard';
 import Loader from '../loader/Loader';
 import { useRouter } from 'next/router';
 import Sidebar from '../Nav';
+import MovieLayoutMeta from '../Meta/MovieLayoutMeta';
 
 type moviesLayoutProps = {
     children: React.ReactNode,
@@ -21,6 +22,8 @@ const MoviesLayout: React.FC<moviesLayoutProps> = ({ children, currentPage, tota
     const router = useRouter()
 
     return (
+      <>
+      <MovieLayoutMeta title={title}/>
       <section className="flex flex-1 h-[91vh]">
         <Sidebar />
         <main className=" flex flex-col flex-1">
@@ -36,6 +39,7 @@ const MoviesLayout: React.FC<moviesLayoutProps> = ({ children, currentPage, tota
           </section>
         </main>
       </section>
+      </>
     );
 }
 

@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import AppMeta from '@/components/Meta/AppMeta';
 import ImageSlider from '@/components/Slider/ImageSlider'
 import TrailerSlider from '@/components/Slider/TrailerSlider';
 import Footer from '@/components/footer';
@@ -71,6 +72,8 @@ const Home = () => {
     }, []);
 
     return (
+        <>
+        <AppMeta/>
         <div>
             {loading ? (
                 <div className={`w-screen h-screen flex justify-center items-center ${showSidebar&&"overflow-hidden"}`}>
@@ -97,6 +100,7 @@ const Home = () => {
                 </div>
             )}
         </div>
+        </>
     )
 }
 
