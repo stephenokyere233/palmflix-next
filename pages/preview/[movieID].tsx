@@ -10,7 +10,7 @@ import { firebaseAuth, firestoreDB } from "@/config/firebase.config";
 import { SLIDER_CONFIG } from "@/config/slider.config";
 import { img_path } from "@/constants/endpoints";
 import { AppContext } from "@/context";
-import {  Review } from "@/interfaces";
+import { Review } from "@/interfaces";
 import axios from "axios";
 import {
   setDoc,
@@ -28,13 +28,14 @@ import toast from "react-hot-toast";
 import { BiBookmark, BiShareAlt } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
+import { mergeObjects } from "@/utils/mergeObj.util";
 
 const MoviePreview: React.FC<any> = () => {
   const [movieInfo, setMovieInfo] = useState<any>(null);
   const [movieCastInfo, setMovieCastInfo] = useState<any>(null);
   const [dataType, setDataType] = useState<string>("movie");
   const [loading, setLoading] = useState(true);
-  const [error,setError]=useState(false)
+  const [error, setError] = useState(false);
   const router = useRouter();
   const {
     setSelectedMovieID,
@@ -54,7 +55,6 @@ const MoviePreview: React.FC<any> = () => {
   const [reviews, setReviews] = useState<any[]>([]);
   const [userReviews, setUserReviews] = useState<Review[]>([]);
 
-  
   const getUserReviews = async (movieID: string) => {
     const reviews_: Review[] = [];
     let collectionRef = collection(firestoreDB, "user_reviews");
@@ -83,19 +83,19 @@ const MoviePreview: React.FC<any> = () => {
       });
   };
 
-  function mergeObjects(obj1: any, obj2: any) {
-    const merged = { ...obj1, ...obj2 };
-    Object.keys(merged).forEach((key) => {
-      if (
-        merged[key] === null ||
-        merged[key] === undefined ||
-        merged[key] === ""
-      ) {
-        delete merged[key];
-      }
-    });
-    setMovieInfo(merged);
-  }
+  // function mergeObjects(obj1: any, obj2: any) {
+  //   const merged = { ...obj1, ...obj2 };
+  //   Object.keys(merged).forEach((key) => {
+  //     if (
+  //       merged[key] === null ||
+  //       merged[key] === undefined ||
+  //       merged[key] === ""
+  //     ) {
+  //       delete merged[key];
+  //     }
+  //   });
+  //   setMovieInfo(merged);
+  // }
 
   const fetchMovieData = async (movieID: string) => {
     try {
@@ -128,7 +128,7 @@ const MoviePreview: React.FC<any> = () => {
         movieCastRes.json(),
         tvCastRes.json(),
       ]);
-      mergeObjects(movieData, tvData);
+      setMovieInfo(mergeObjects(movieData, tvData));
       console.log("movieCast", movieCast);
       console.log("tvCast", tvCast);
       if (movieCast.cast && movieCast.cast.length > 1) {
@@ -150,10 +150,10 @@ const MoviePreview: React.FC<any> = () => {
       }
 
       setLoading(false);
-      setError(false)
+      setError(false);
     } catch (error) {
       console.error(error);
-      setError(true)
+      setError(true);
       setLoading(false);
     }
   };
@@ -230,7 +230,7 @@ const MoviePreview: React.FC<any> = () => {
       setSelectedMovieID(id);
     }
   }, []);
-  console.log("movieINfo",movieInfo)
+  console.log("movieINfo", movieInfo);
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
@@ -349,13 +349,7 @@ const MoviePreview: React.FC<any> = () => {
 
   return (
     <>
-      <MovieMeta
-        image={`${
-          img_path + (movieInfo.backdrop_path || movieInfo.poster_path)
-        }`}
-        title={movieInfo.title}
-        description={movieInfo.overview}
-      />
+      <MovieMeta id={selectedMovieID} />
       {showPlayer && (
         <YouTubePlayer
           videoId={trailers[0].key}
