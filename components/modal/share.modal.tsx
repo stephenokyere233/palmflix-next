@@ -1,56 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AppContext } from "@/context";
 import React, { useContext } from "react";
-import { firebaseAuth, firestoreDB } from "@/config/firebase.config";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/router";
 import ModalLayout from "../layout/ModalLayout";
-import { BiX } from "react-icons/bi";
-import { setDoc, doc } from "firebase/firestore";
-import { BiCopy } from "react-icons/bi";
+import { BiX ,BiCopy} from "react-icons/bi";
 
 const ShareModal = () => {
   const [url, setUrl] = React.useState<string>(window.location.href);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const router = useRouter();
-  console.log(router)
-  console.log(window.location.href)
-
-  const { selectedMovieID, setShowShareModal } = useContext(AppContext);
-
-  //   const addReview = async (movieID: string) => {
-  //     if (comment==="") {
-  //        toast.error("fill the form");
-  //        return;
-  //     }
-  //     let newReview = {
-  //       movieID,
-  //       username: firebaseAuth.currentUser?.displayName,
-  //       email: firebaseAuth.currentUser?.email,
-  //       image: firebaseAuth.currentUser?.photoURL,
-  //       uid: firebaseAuth.currentUser?.uid,
-  //       content: comment,
-  //       created_at: Date.now(),
-  //       id:`${movieID}-${Date.now()}`,
-  //       type:"user"
-  //     };
-
-  //     let docRef = `user_reviews/${newReview.id}`;
-  //     console.log("newReview", newReview);
-
-  //     const toastId = toast.loading("Loading...");
-  //     await setDoc(doc(firestoreDB, docRef), newReview)
-  //       .then(() => {
-  //         toast.success("Added new review");
-  //         toast.dismiss(toastId);
-  //         setShowReviewModal(false)
-  //       })
-  //       .catch(() => {
-  //         toast.error("Error occured adding bookmark");
-  //       });
-  //     console.log("add review");
-  //     console.log("id", selectedMovieID);
-  //   };
+  const {  setShowShareModal } = useContext(AppContext);
 
   return (
     <ModalLayout onHideModal={() => setShowShareModal(false)}>

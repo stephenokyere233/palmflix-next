@@ -58,13 +58,14 @@ const MoviePreview: React.FC<any> = () => {
   const getUserReviews = async (movieID: string) => {
     const reviews_: Review[] = [];
     let collectionRef = collection(firestoreDB, "user_reviews");
-    let q = query(collectionRef, where("movieID", ">=", movieID));
+    let q = query(collectionRef, where("movieID", "==", movieID));
 
     onSnapshot(q, (docsSnap) => {
       docsSnap.forEach((doc) => {
         reviews_.push(doc.data() as Review);
       });
       setUserReviews(reviews_);
+      console.log("user_reviews",reviews_)
       setLoading(false);
     });
   };
@@ -82,20 +83,6 @@ const MoviePreview: React.FC<any> = () => {
         toast.error("Error occured removing bookmark");
       });
   };
-
-  // function mergeObjects(obj1: any, obj2: any) {
-  //   const merged = { ...obj1, ...obj2 };
-  //   Object.keys(merged).forEach((key) => {
-  //     if (
-  //       merged[key] === null ||
-  //       merged[key] === undefined ||
-  //       merged[key] === ""
-  //     ) {
-  //       delete merged[key];
-  //     }
-  //   });
-  //   setMovieInfo(merged);
-  // }
 
   const fetchMovieData = async (movieID: string) => {
     try {
@@ -144,7 +131,6 @@ const MoviePreview: React.FC<any> = () => {
         tvCast.cast &&
         tvCast.cast.length > 1
       ) {
-        console.log("both defined");
         setMovieCastInfo(movieCast);
         setDataType("movie");
       }
@@ -153,7 +139,7 @@ const MoviePreview: React.FC<any> = () => {
       setError(false);
     } catch (error) {
       console.error(error);
-      setError(true);
+      // setTimeout(()=>setError(true),3000)
       setLoading(false);
     }
   };
@@ -184,6 +170,7 @@ const MoviePreview: React.FC<any> = () => {
       .request(options)
       .then(function (response) {
         setReviews(response.data.results);
+        console.log("reviews from api",response.data.results)
       })
       .catch(function (error) {
         console.error(error);
@@ -230,7 +217,19 @@ const MoviePreview: React.FC<any> = () => {
       setSelectedMovieID(id);
     }
   }, []);
-  console.log("movieINfo", movieInfo);
+
+  // useEffect(()=>{
+  //      console.log(
+  //        Array.from(
+  //          new Set([
+  //            ...reviews,
+  //            ...userReviews.filter(
+  //              (review) => review.movieID === selectedMovieID,
+  //            ),
+  //          ]),
+  //        ),
+  //      );
+  // },[])
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
@@ -338,7 +337,10 @@ const MoviePreview: React.FC<any> = () => {
       </div>
     );
   }
-  if (error || !movieInfo) {
+  if (!movieInfo) {
+    return <></>;
+  }
+  if (error) {
     return (
       <div className="flex  h-[90vh] w-full flex-1 flex-col items-center justify-center">
         <Image src="/error.png" alt="error" width={450} height={450} />
@@ -349,7 +351,13 @@ const MoviePreview: React.FC<any> = () => {
 
   return (
     <>
-      <MovieMeta id={selectedMovieID} />
+      <MovieMeta
+        image={`${
+          img_path + (movieInfo.backdrop_path || movieInfo.poster_path)
+        }`}
+        title={movieInfo.title}
+        description={movieInfo.overview}
+      />
       {showPlayer && (
         <YouTubePlayer
           videoId={trailers[0].key}
@@ -447,43 +455,69 @@ const MoviePreview: React.FC<any> = () => {
         </div>
 
         <div id="reviews">
-          <h2 className="my-10 text-center text-2xl font-semibold text-brand">
+          <h2 className="mt-6 mb-2 text-center text-2xl font-semibold text-brand">
             Movie Reviews
           </h2>
           <div className="mb-10">
-            <Slider {...SLIDER_CONFIG} className="gap-20">
-              {[
-                ...reviews,
-                ...userReviews.filter(
-                  (review) => review.movieID === selectedMovieID,
-                ),
-              ].map((review) => {
-                const { author_details, content, created_at, id, type } =
-                  review;
-                return type === "user" ? (
-                  <ReviewCard
-                    key={id}
-                    username={review.username}
-                    content={content}
-                    created_at={created_at}
-                    uid={review.uid}
-                    type={review.type}
-                    removeReview={() =>
-                      deleteReview(review.id, selectedMovieID)
-                    }
-                    id={review.id}
-                  />
-                ) : (
-                  <ReviewCard
-                    key={id}
-                    username={author_details.username}
-                    content={content}
-                    created_at={created_at}
-                    id={id}
-                  />
-                );
-              })}
-            </Slider>
+            {/* {
+            [
+              ...reviews,
+              ...userReviews.filter(
+                (review) => review.movieID === selectedMovieID,
+              ),
+            ].length > 0 ? ( */}
+              <Slider {...SLIDER_CONFIG} className="gap-20">
+                {Array.from(new Set([
+                  ...reviews,
+                  ...userReviews.filter(
+                    (review) => review.movieID === selectedMovieID,
+                  ),
+                ])).map((review) => {
+                  const { author_details, content, created_at, id, type } =
+                    review;
+                  return type === "user" ? (
+                    <ReviewCard
+                      key={id}
+                      username={review.username}
+                      content={content}
+                      created_at={created_at}
+                      uid={review.uid}
+                      type={review.type}
+                      removeReview={() =>
+                        deleteReview(review.id, selectedMovieID)
+                      }
+                      id={review.id}
+                    />
+                  ) : (
+                    <ReviewCard
+                      key={id}
+                      username={author_details.username}
+                      content={content}
+                      created_at={created_at}
+                      id={id}
+                    />
+                  );
+                })}
+              </Slider>
+            {/* ) : (
+              <div
+                style={{ background: "rgba(169, 169, 169, 0.2)" }}
+                className="flex items-center p-10 rounded-md h-[300px] gap-4 flex-col justify-center text-2xl"
+              >
+                <p className="text-4xl uppercase">No reviews yet</p>
+                <button
+                  className="p-2 md:px-4 rounded-md bg-brand text-white text-sm md:text-lg"
+                  onClick={() => {
+                    !firebaseAuth.currentUser?.uid
+                      ? setShowLoginModal(true)
+                      : setShowReviewModal(true);
+                  }}
+                >
+                  Leave a review
+                </button>
+              </div>
+            ) */}
+          {/* } */}
           </div>
         </div>
 

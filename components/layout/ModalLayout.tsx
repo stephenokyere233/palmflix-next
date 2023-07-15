@@ -11,7 +11,7 @@ export type TModalProps = {
 }
 
 const ModalLayout: React.FC<TModalProps> = ({ showModal, title, children, onHideModal, modalColor }) => {
-    const { showSignupModal, setShowSignupModal, showLoginModal, setShowLoginModal, setShowUserDropdown } = React.useContext(AppContext);
+    const { setShowSignupModal,setShowLoginModal, setShowUserDropdown } = React.useContext(AppContext);
     const handleBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
         if (event.target === event.currentTarget) {
             if (onHideModal) {
@@ -23,7 +23,7 @@ const ModalLayout: React.FC<TModalProps> = ({ showModal, title, children, onHide
         }
     }
 
-    if (showModal === false) return (<></>)
+    if (showModal === false) return (<></>) 
     else return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-screen h-screen bg-[#00000080] z-[20] fixed top-0 left-0 flex items-center justify-center" onClick={handleBackgroundClick}>
             <div className="p-2 md:p-0 absolute ">

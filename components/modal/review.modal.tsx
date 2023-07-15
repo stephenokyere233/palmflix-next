@@ -3,7 +3,6 @@ import { AppContext } from "@/context";
 import React, { useContext } from "react";
 import { firebaseAuth, firestoreDB } from "@/config/firebase.config";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/router";
 import ModalLayout from "../layout/ModalLayout";
 import { BiX } from "react-icons/bi";
 import { setDoc, doc } from "firebase/firestore";

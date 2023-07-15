@@ -20,7 +20,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     setShowUserDropdown,
     setBookmarkedMovies,
     setSavedMovieIDS,
-    showSidebar,
     setShowSidebar,
   } = useContext(AppContext);
   const router = useRouter();

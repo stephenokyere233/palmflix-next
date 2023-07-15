@@ -1,11 +1,5 @@
-import { TABS } from '@/constants/TABS';
-import Link from 'next/link';
-import React, { ReactNode } from 'react'
-import { FaBars, FaSearch } from 'react-icons/fa';
+import React from 'react'
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import MovieCard from '../Cards/MovieCard';
-import Loader from '../loader/Loader';
-import { useRouter } from 'next/router';
 import Sidebar from '../Nav';
 import MovieLayoutMeta from '../Meta/MovieLayoutMeta';
 
@@ -19,7 +13,6 @@ type moviesLayoutProps = {
 }
 
 const MoviesLayout: React.FC<moviesLayoutProps> = ({ children, currentPage, totalPages, title, actionNext, actionPrev }) => {
-    const router = useRouter()
 
     return (
       <>
