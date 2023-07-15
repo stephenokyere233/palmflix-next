@@ -29,6 +29,7 @@ import { BiBookmark, BiShareAlt } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
 import { mergeObjects } from "@/utils/mergeObj.util";
+import LoadIcon from "@/components/loader/LoadIcon";
 
 const MoviePreview: React.FC<any> = () => {
   const [movieInfo, setMovieInfo] = useState<any>(null);
@@ -54,8 +55,10 @@ const MoviePreview: React.FC<any> = () => {
   const [similarMovies, setSimilarMovies] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [userReviews, setUserReviews] = useState<Review[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
 
   const getUserReviews = async (movieID: string) => {
+    // setLoadingReviews(true)
     const reviews_: Review[] = [];
     let collectionRef = collection(firestoreDB, "user_reviews");
     let q = query(collectionRef, where("movieID", "==", movieID));
@@ -65,7 +68,8 @@ const MoviePreview: React.FC<any> = () => {
         reviews_.push(doc.data() as Review);
       });
       setUserReviews(reviews_);
-      console.log("user_reviews",reviews_)
+      // setLoadingReviews(false)
+      console.log("user_reviews", reviews_);
       setLoading(false);
     });
   };
@@ -158,7 +162,7 @@ const MoviePreview: React.FC<any> = () => {
 
   const fetchMovieReviews = async (movieID: string) => {
     const api_url = `https://api.themoviedb.org/3/movie/${movieID}/reviews?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
-
+    setLoadingReviews(true);
     const options = {
       method: "GET",
       url: api_url,
@@ -170,7 +174,8 @@ const MoviePreview: React.FC<any> = () => {
       .request(options)
       .then(function (response) {
         setReviews(response.data.results);
-        console.log("reviews from api",response.data.results)
+        setLoadingReviews(false);
+        console.log("reviews from api", response.data.results);
       })
       .catch(function (error) {
         console.error(error);
@@ -459,20 +464,28 @@ const MoviePreview: React.FC<any> = () => {
             Movie Reviews
           </h2>
           <div className="mb-10">
-            {/* {
-            [
-              ...reviews,
-              ...userReviews.filter(
-                (review) => review.movieID === selectedMovieID,
-              ),
-            ].length > 0 ? ( */}
+            {loadingReviews ? (
+              <div
+                style={{ background: "rgba(169, 169, 169, 0.2)" }}
+                className="flex items-center p-10 rounded-md h-[300px] gap-4 flex-col justify-center text-2xl relative"
+              >
+                <p className="text-3xl capitalize">loading reviews...</p>
+              </div>
+            ) : [
+                ...reviews,
+                ...userReviews.filter(
+                  (review) => review.movieID === selectedMovieID,
+                ),
+              ].length > 0 ? (
               <Slider {...SLIDER_CONFIG} className="gap-20">
-                {Array.from(new Set([
-                  ...reviews,
-                  ...userReviews.filter(
-                    (review) => review.movieID === selectedMovieID,
-                  ),
-                ])).map((review) => {
+                {Array.from(
+                  new Set([
+                    ...reviews,
+                    ...userReviews.filter(
+                      (review) => review.movieID === selectedMovieID,
+                    ),
+                  ]),
+                ).map((review) => {
                   const { author_details, content, created_at, id, type } =
                     review;
                   return type === "user" ? (
@@ -499,12 +512,12 @@ const MoviePreview: React.FC<any> = () => {
                   );
                 })}
               </Slider>
-            {/* ) : (
+            ) : (
               <div
                 style={{ background: "rgba(169, 169, 169, 0.2)" }}
                 className="flex items-center p-10 rounded-md h-[300px] gap-4 flex-col justify-center text-2xl"
               >
-                <p className="text-4xl uppercase">No reviews yet</p>
+                <p className="text-3xl capitalize">No reviews yet</p>
                 <button
                   className="p-2 md:px-4 rounded-md bg-brand text-white text-sm md:text-lg"
                   onClick={() => {
@@ -516,8 +529,7 @@ const MoviePreview: React.FC<any> = () => {
                   Leave a review
                 </button>
               </div>
-            ) */}
-          {/* } */}
+            )}
           </div>
         </div>
 

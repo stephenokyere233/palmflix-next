@@ -17,7 +17,7 @@ const UserReviewCard: FC<any> = ({
   return (
     <div
       onClick={() => console.log(id)}
-      className="rounded-lg p-4 relative my-8"
+      className="rounded-lg p-4 relative my-8  min-[400px]"
       style={{ background: "rgba(169, 169, 169, 0.2)" }}
     >
       <div>

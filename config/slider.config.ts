@@ -19,7 +19,6 @@ export const SLIDER_CONFIG = {
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
-        initialSlide: 2,
       },
     },
     {
