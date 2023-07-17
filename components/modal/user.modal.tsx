@@ -5,6 +5,7 @@ import { firebaseAuth } from "@/config/firebase.config";
 import toast from "react-hot-toast";
 import { AppContext } from "@/context";
 import ModalLayout from "../layout/ModalLayout";
+import { useRouter } from "next/router";
 
 const UserDropDown = () => {
   const {
@@ -13,6 +14,7 @@ const UserDropDown = () => {
     setSavedMovieIDS,
     setBookmarkedMovies,
   } = useContext(AppContext);
+  const router=useRouter()
 
   const signOut = () => {
     firebaseAuth
@@ -24,6 +26,7 @@ const UserDropDown = () => {
         setShowUserDropdown(false);
         setSavedMovieIDS([]);
         setBookmarkedMovies([]);
+        if(router.pathname==="/profile") router.push("/")
         toast.success("Logged out Successfully");
       })
       .catch((error) => {

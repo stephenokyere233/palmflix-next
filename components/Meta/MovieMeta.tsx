@@ -10,7 +10,7 @@ interface MovieData {
 const MovieMeta: FC<MovieData> = ({ title, description, image }) => {
   return (
     <Head>
-      <title>{title}</title>
+      <title>{`Trailers Home - ${title}`}</title>
       <meta name="title" content={title} />
       <meta name="description" content={description} />
 

@@ -23,7 +23,7 @@ import {
 } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BiBookmark, BiShareAlt } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
@@ -54,38 +54,21 @@ const MoviePreview: React.FC<any> = () => {
   const [showAllCasts, setShowAllCasts] = useState<number>(8);
   const [similarMovies, setSimilarMovies] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
-  const [userReviews, setUserReviews] = useState<Review[]>([]);
+  // const [userReviews, setUserReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
 
   const getUserReviews = async (movieID: string) => {
-    // setLoadingReviews(true)
     const reviews_: Review[] = [];
-    let collectionRef = collection(firestoreDB, "user_reviews");
+    const collectionRef = collection(firestoreDB, "user_reviews");
     let q = query(collectionRef, where("movieID", "==", movieID));
 
     onSnapshot(q, (docsSnap) => {
       docsSnap.forEach((doc) => {
         reviews_.push(doc.data() as Review);
       });
-      setUserReviews(reviews_);
-      // setLoadingReviews(false)
       console.log("user_reviews", reviews_);
-      setLoading(false);
     });
-  };
-
-  const deleteReview = async (docID: string, movieID: string) => {
-    const docRef = `user_reviews/${docID}`;
-    const toastId = toast.loading("Loading...");
-    await deleteDoc(doc(firestoreDB, docRef))
-      .then(() => {
-        toast.success("Review deleted");
-        getUserReviews(movieID);
-        toast.dismiss(toastId);
-      })
-      .catch(() => {
-        toast.error("Error occured removing bookmark");
-      });
+    return reviews_;
   };
 
   const fetchMovieData = async (movieID: string) => {
@@ -161,32 +144,54 @@ const MoviePreview: React.FC<any> = () => {
   };
 
   const fetchMovieReviews = async (movieID: string) => {
-    const api_url = `https://api.themoviedb.org/3/movie/${movieID}/reviews?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
     setLoadingReviews(true);
-    const options = {
-      method: "GET",
-      url: api_url,
-      headers: {
-        accept: "application/json",
-      },
-    };
-    axios
-      .request(options)
-      .then(function (response) {
-        setReviews(response.data.results);
-        setLoadingReviews(false);
-        console.log("reviews from api", response.data.results);
+    try {
+      const api_url = `https://api.themoviedb.org/3/movie/${movieID}/reviews?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
+
+      const [user_reviews, api_reviews] = await Promise.all([
+        getUserReviews(movieID),
+        fetch(api_url),
+      ]);
+
+      if (!api_reviews.ok) {
+        throw new Error("Failed to fetch API reviews");
+      }
+
+      const api_review_data = await api_reviews.json();
+      setLoadingReviews(false);
+      setReviews([...user_reviews, ...api_review_data.results]);
+
+      console.log("user_reviews new", user_reviews);
+      console.log("api_reviews_new", api_review_data);
+    } catch (error) {
+      console.error(error);
+      setLoadingReviews(false);
+      console.error("Error fetching movie reviews:", error);
+    }
+  };
+
+  const deleteReview = async (docID: string, movieID: string) => {
+    const docRef = `user_reviews/${docID}`;
+    const toastId = toast.loading("Loading...");
+    await deleteDoc(doc(firestoreDB, docRef))
+      .then(() => {
+        toast.success("Review deleted");
+        fetchMovieReviews(selectedMovieID);
+        toast.dismiss(toastId);
       })
-      .catch(function (error) {
-        console.error(error);
+      .catch(() => {
+        toast.error("Error occured removing bookmark");
       });
   };
 
   useEffect(() => {
     fetchMovieReviews(selectedMovieID);
     fetchSimilarMovies(selectedMovieID);
-    getUserReviews(selectedMovieID);
-  }, [selectedMovieID]);
+  }, [selectedMovieID, showReviewModal]);
+
+  //   useLayoutEffect(() => {
+  //   fetchMovieReviews(selectedMovieID);
+  // }, []);
 
   useEffect(() => {
     const selectedID = localStorage.getItem("selectedMovieID");
@@ -222,19 +227,6 @@ const MoviePreview: React.FC<any> = () => {
       setSelectedMovieID(id);
     }
   }, []);
-
-  // useEffect(()=>{
-  //      console.log(
-  //        Array.from(
-  //          new Set([
-  //            ...reviews,
-  //            ...userReviews.filter(
-  //              (review) => review.movieID === selectedMovieID,
-  //            ),
-  //          ]),
-  //        ),
-  //      );
-  // },[])
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
@@ -471,21 +463,9 @@ const MoviePreview: React.FC<any> = () => {
               >
                 <p className="text-3xl capitalize">loading reviews...</p>
               </div>
-            ) : [
-                ...reviews,
-                ...userReviews.filter(
-                  (review) => review.movieID === selectedMovieID,
-                ),
-              ].length > 0 ? (
+            ) : reviews.length > 0 ? (
               <Slider {...SLIDER_CONFIG} className="gap-20">
-                {Array.from(
-                  new Set([
-                    ...reviews,
-                    ...userReviews.filter(
-                      (review) => review.movieID === selectedMovieID,
-                    ),
-                  ]),
-                ).map((review) => {
+                {reviews.map((review) => {
                   const { author_details, content, created_at, id, type } =
                     review;
                   return type === "user" ? (

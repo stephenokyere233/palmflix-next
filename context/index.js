@@ -22,6 +22,7 @@ export const AppProvider = ({ children }) => {
   const [currentMovies, setCurrentMovies] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   return (
     <AppContext.Provider
@@ -62,6 +63,8 @@ export const AppProvider = ({ children }) => {
         setShowReviewModal,
         showShareModal,
         setShowShareModal,
+        showResetModal,
+        setShowResetModal,
       }}
     >
       {children}
