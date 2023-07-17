@@ -57,7 +57,7 @@ const Footer = () => {
                 </h3>
                 <div className="mt-4 flex flex-col gap-3 capitalize">
                   <Link href="mailto:stephenokyere621@gmail.com">Contact</Link>
-                  <Link href="#">Documentation</Link>
+                  <Link href="/docs.pdf" target="_blank">Documentation</Link>
                 </div>
               </div>
             </section>

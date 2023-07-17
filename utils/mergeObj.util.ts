@@ -2,7 +2,7 @@
  * 
  * @param obj1 
  * @param obj2 
- * @returns 
+ * @returns merged Object
  */
 
 export function mergeObjects(obj1: any, obj2: any) {
