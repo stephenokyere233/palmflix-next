@@ -29,7 +29,6 @@ import { BiBookmark, BiShareAlt } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
 import { mergeObjects } from "@/utils/mergeObj.util";
-import LoadIcon from "@/components/loader/LoadIcon";
 
 const MoviePreview: React.FC<any> = () => {
   const [movieInfo, setMovieInfo] = useState<any>(null);
@@ -476,6 +475,7 @@ const MoviePreview: React.FC<any> = () => {
                       created_at={created_at}
                       uid={review.uid}
                       type={review.type}
+                      rating={review.rating}
                       removeReview={() =>
                         deleteReview(review.id, selectedMovieID)
                       }
@@ -487,6 +487,7 @@ const MoviePreview: React.FC<any> = () => {
                       username={author_details.username}
                       content={content}
                       created_at={created_at}
+                      rating={author_details.rating}
                       id={id}
                     />
                   );

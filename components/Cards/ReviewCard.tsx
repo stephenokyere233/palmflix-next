@@ -11,6 +11,7 @@ const UserReviewCard: FC<any> = ({
   created_at,
   type,
   uid,
+  rating,
   id,
   removeReview,
 }) => {
@@ -40,8 +41,11 @@ const UserReviewCard: FC<any> = ({
       </div>
       <p
         dangerouslySetInnerHTML={{ __html: content }}
-        className={content.length > 35 ? "max-lines-4" : ""}
+        className={content.length > 35 ? "max-lines-4 mb-2" : "mb-2"}
       />
+      <span>
+        Rating: {rating}/10
+      </span>
       <span className="my-2 flex w-full justify-end  text-gray-300">
         {formatDate(created_at)}
       </span>

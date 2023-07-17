@@ -7,31 +7,29 @@ import ModalLayout from "../layout/ModalLayout";
 import { BiX } from "react-icons/bi";
 import { setDoc, doc } from "firebase/firestore";
 
-
 const ReviewModal = () => {
   const [comment, setComment] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [rating, setRating] = React.useState<string>("");
 
-  const {
-    selectedMovieID,
-    setShowReviewModal,
-  } = useContext(AppContext);
+  const { selectedMovieID, setShowReviewModal } = useContext(AppContext);
 
   const addReview = async (movieID: string) => {
-    if (comment==="") {
-       toast.error("fill the form");
-       return;
+    if (comment === "") {
+      toast.error("fill the form");
+      return;
     }
     let newReview = {
       movieID,
+      rating,
       username: firebaseAuth.currentUser?.displayName,
       email: firebaseAuth.currentUser?.email,
       image: firebaseAuth.currentUser?.photoURL,
       uid: firebaseAuth.currentUser?.uid,
       content: comment,
       created_at: Date.now(),
-      id:`${movieID}-${Date.now()}`,
-      type:"user"
+      id: `${movieID}-${Date.now()}`,
+      type: "user",
     };
 
     let docRef = `user_reviews/${newReview.id}`;
@@ -42,7 +40,7 @@ const ReviewModal = () => {
       .then(() => {
         toast.success("Added new review");
         toast.dismiss(toastId);
-        setShowReviewModal(false)
+        setShowReviewModal(false);
       })
       .catch(() => {
         toast.error("Error occured adding bookmark");
@@ -61,10 +59,23 @@ const ReviewModal = () => {
         />
         <h1 className="text-2xl uppercase">Submit Review</h1>
         <div className="flex w-full flex-col pb-2">
+          <label htmlFor="password">Rating</label>
+          <input
+            name="rating"
+            value={rating}
+            maxLength={2}
+            placeholder="Rate this movie out of 10"
+            className="rounded-md border bg-transparent p-2 outline-none"
+            onChange={(event) => {
+              setRating(event.target.value);
+            }}
+          />
+        </div>
+        <div className="flex w-full flex-col pb-2">
           <label htmlFor="password">Review</label>
           <textarea
             name="comment"
-            rows={10}
+            rows={8}
             value={comment}
             className="rounded-md border bg-transparent p-2 outline-none"
             onChange={(event) => {

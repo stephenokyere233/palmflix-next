@@ -19,7 +19,7 @@ const Footer = () => {
                   <Logo />
                 </div>
                 <p className="my-4">
-                  Everything you need to make movie <br/> recommendations and
+                  Everything you need to make movie <br /> recommendations and
                   bookmarking a breeze
                 </p>
                 <div className="flex gap-6 pb-4">
@@ -33,7 +33,9 @@ const Footer = () => {
                   </Link>
                   <FaFacebookSquare size={28} />
                 </div>
-              <Link href="mailto:stephenokyere621@gmail.com" className="">stephenokyere621@gmail.com</Link>
+                <Link href="mailto:stephenokyere621@gmail.com" className="">
+                  stephenokyere621@gmail.com
+                </Link>
               </div>
             </section>
             <section className="flex flex-col">
@@ -42,9 +44,9 @@ const Footer = () => {
                   Quick links
                 </h3>
                 <div className="mt-4 flex flex-col gap-3 capitalize">
-                  <Link href="#about">About</Link>
-                  <Link href="#services">Services</Link>
-                  <Link href="#gallery">Gallery</Link>
+                  <Link href="/trending">Trending Movies</Link>
+                  <Link href="/top_rated">Popular Movies</Link>
+                  <Link href="tv_shows">TV Shows</Link>
                 </div>
               </div>
             </section>
@@ -54,9 +56,8 @@ const Footer = () => {
                   important links
                 </h3>
                 <div className="mt-4 flex flex-col gap-3 capitalize">
-                  <Link href="#about">Contact</Link>
-                  <Link href="#">privacy policy</Link>
-                  <Link href="#">terms & conditions</Link>
+                  <Link href="mailto:stephenokyere621@gmail.com">Contact</Link>
+                  <Link href="#">Documentation</Link>
                 </div>
               </div>
             </section>
