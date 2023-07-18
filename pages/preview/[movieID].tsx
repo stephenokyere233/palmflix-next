@@ -124,6 +124,7 @@ const MoviePreview: React.FC<any> = () => {
       setError(false);
     } catch (error) {
       console.error(error);
+      setError(true)
       // setTimeout(()=>setError(true),3000)
       setLoading(false);
     }
@@ -168,7 +169,7 @@ const MoviePreview: React.FC<any> = () => {
     }
   };
 
-  const deleteReview = async (docID: string, movieID: string) => {
+  const deleteReview = async (docID: string) => {
     const docRef = `user_reviews/${docID}`;
     const toastId = toast.loading("Loading...");
     await deleteDoc(doc(firestoreDB, docRef))
@@ -187,12 +188,8 @@ const MoviePreview: React.FC<any> = () => {
     fetchSimilarMovies(selectedMovieID);
   }, [selectedMovieID, showReviewModal]);
 
-  //   useLayoutEffect(() => {
-  //   fetchMovieReviews(selectedMovieID);
-  // }, []);
-
   useEffect(() => {
-    const selectedID = localStorage.getItem("selectedMovieID");
+    // const selectedID = localStorage.getItem("selectedMovieID");
     const savedMovies = localStorage.getItem("savedMovies");
 
     if (savedMovies) {
@@ -205,30 +202,34 @@ const MoviePreview: React.FC<any> = () => {
         console.error("Error parsing stored data:", error);
       }
     }
-    if (!selectedMovieID) {
-      setSelectedMovieID(selectedID);
-      fetchMovieData(selectedID as string);
-    } else if (!selectedID){
-      console.log("no selected id")
-      setSelectedMovieID(router.query.movieID)
-    }
-     else {
+    // if (!selectedMovieID) {
+    //   setSelectedMovieID(selectedID);
+    //   fetchMovieData(selectedID as string);
+    //   console.log("fetching with id from LS")
+    // } else if (!selectedID){
+    //   console.log("no selected id")
+    //   setSelectedMovieID(router.query.movieID)
+    // }
+    //  else {
       fetchMovieData(selectedMovieID);
-    }
+      console.log("id is defined movie fetch works either way")
+    // }
   }, [selectedMovieID]);
 
   useEffect(() => {
     const { movieID } = router.query;
+    console.log("taking movie id from query")
     setSelectedMovieID(movieID);
     localStorage.setItem("selectedMovieID", movieID?.toString() as string);
   }, [router]);
 
-  useEffect(() => {
-    if (!selectedMovieID) {
-      const id = localStorage.getItem("selectedMovieID");
-      setSelectedMovieID(id);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!selectedMovieID) {
+  //     const id = localStorage.getItem("selectedMovieID");
+  //     setSelectedMovieID(id);
+  //     console.log("initial load getting id from LS")
+  //   }
+  // }, []);
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
@@ -480,7 +481,7 @@ const MoviePreview: React.FC<any> = () => {
                       type={review.type}
                       rating={review.rating}
                       removeReview={() =>
-                        deleteReview(review.id, selectedMovieID)
+                        deleteReview(review.id)
                       }
                       id={review.id}
                     />
