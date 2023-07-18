@@ -53,7 +53,6 @@ const MoviePreview: React.FC<any> = () => {
   const [showAllCasts, setShowAllCasts] = useState<number>(8);
   const [similarMovies, setSimilarMovies] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
-  // const [userReviews, setUserReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
 
   const getUserReviews = async (movieID: string) => {
@@ -209,7 +208,11 @@ const MoviePreview: React.FC<any> = () => {
     if (!selectedMovieID) {
       setSelectedMovieID(selectedID);
       fetchMovieData(selectedID as string);
-    } else {
+    } else if (!selectedID){
+      console.log("no selected id")
+      setSelectedMovieID(router.query.movieID)
+    }
+     else {
       fetchMovieData(selectedMovieID);
     }
   }, [selectedMovieID]);
