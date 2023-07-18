@@ -35,7 +35,7 @@ const MoviePreview: React.FC<any> = () => {
   const [movieCastInfo, setMovieCastInfo] = useState<any>(null);
   const [dataType, setDataType] = useState<string>("movie");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   const router = useRouter();
   const {
     setSelectedMovieID,
@@ -121,11 +121,8 @@ const MoviePreview: React.FC<any> = () => {
       }
 
       setLoading(false);
-      setError(false);
     } catch (error) {
       console.error(error);
-      setError(true)
-      // setTimeout(()=>setError(true),3000)
       setLoading(false);
     }
   };
@@ -220,6 +217,7 @@ const MoviePreview: React.FC<any> = () => {
     const { movieID } = router.query;
     console.log("taking movie id from query")
     setSelectedMovieID(movieID);
+     fetchMovieData(movieID as string);
     localStorage.setItem("selectedMovieID", movieID?.toString() as string);
   }, [router]);
 
@@ -337,10 +335,11 @@ const MoviePreview: React.FC<any> = () => {
       </div>
     );
   }
+  // if (!movieInfo) {
+  //   return <></>;
+  // }
+
   if (!movieInfo) {
-    return <></>;
-  }
-  if (error) {
     return (
       <div className="flex  h-[90vh] w-full flex-1 flex-col items-center justify-center">
         <Image src="/error.png" alt="error" width={450} height={450} />
