@@ -208,18 +208,26 @@ const MoviePreview: React.FC<any> = () => {
     //   setSelectedMovieID(router.query.movieID)
     // }
     //  else {
-      fetchMovieData(selectedMovieID);
-      console.log("id is defined movie fetch works either way")
+    fetchMovieData(selectedMovieID);
+    console.log("id is defined movie fetch works either way");
     // }
   }, [selectedMovieID]);
 
   useEffect(() => {
     const { movieID } = router.query;
-    console.log("taking movie id from query")
+    console.log("taking movie id from query");
     setSelectedMovieID(movieID);
-     fetchMovieData(movieID as string);
+    fetchMovieData(movieID as string);
     localStorage.setItem("selectedMovieID", movieID?.toString() as string);
   }, [router]);
+  
+  useEffect(() => {
+    const { movieID } = router.query;
+    console.log("taking movie id from query on initial load");
+    setSelectedMovieID(movieID);
+    fetchMovieData(movieID as string);
+    localStorage.setItem("selectedMovieID", movieID?.toString() as string);
+  }, []);
 
   // useEffect(() => {
   //   if (!selectedMovieID) {
@@ -479,9 +487,7 @@ const MoviePreview: React.FC<any> = () => {
                       uid={review.uid}
                       type={review.type}
                       rating={review.rating}
-                      removeReview={() =>
-                        deleteReview(review.id)
-                      }
+                      removeReview={() => deleteReview(review.id)}
                       id={review.id}
                     />
                   ) : (
