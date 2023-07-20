@@ -1,9 +1,9 @@
 export const SLIDER_CONFIG = {
   speed: 500,
-  slidesToShow: 2,
+  slidesToShow: 1,
   slidesToScroll: 2,
   initialSlide: 0,
-  rows: 2,
+  // rows: 2,
   autoplay: true,
   infinite: true,
   responsive: [

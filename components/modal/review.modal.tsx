@@ -7,6 +7,7 @@ import ModalLayout from "../layout/ModalLayout";
 import { BiX } from "react-icons/bi";
 import { setDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
+import useFetchUserReviews from "@/hooks/useUserReviews";
 
 const ReviewModal = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const ReviewModal = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [rating, setRating] = React.useState<string>("");
   const { movieID } = router.query;
+   const { reviews, fetchReviews } = useFetchUserReviews();
 
   const { setShowReviewModal } = useContext(AppContext);
 
@@ -45,6 +47,7 @@ const ReviewModal = () => {
         toast.success("Added new review");
         toast.dismiss(toastId);
         setLoading(false);
+        fetchReviews()
         setShowReviewModal(false);
       })
       .catch(() => {

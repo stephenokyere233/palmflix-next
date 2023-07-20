@@ -1,6 +1,6 @@
 import MovieCard from '@/components/Cards/MovieCard'
 import { AppContext } from '@/context'
-import React, { useContext, useState } from 'react'
+import React, { useContext} from 'react'
 import Image from 'next/image'
 import Sidebar from '@/components/Nav'
 
@@ -9,7 +9,7 @@ const Bookmarks = () => {
 
     const Null = () => {
         return (
-            <div className="flex flex-1 border h-[90vh] flex-col items-center justify-center text-xl opacity-50">
+            <div className="flex flex-1 h-[90vh] flex-col items-center justify-center text-xl opacity-50">
                 <Image
                     src="/null.png"
                     alt=""

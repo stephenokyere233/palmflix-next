@@ -12,15 +12,7 @@ import { img_path } from "@/constants/endpoints";
 import { AppContext } from "@/context";
 import { Review } from "@/interfaces";
 import axios from "axios";
-import {
-  setDoc,
-  doc,
-  deleteDoc,
-  collection,
-  query,
-  where,
-  onSnapshot,
-} from "firebase/firestore";
+import { setDoc, doc, deleteDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -30,6 +22,8 @@ import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
 import { fetchMovieData } from "@/services/fetchMovies.service";
 import { motion } from "framer-motion";
+import useFetchUserReviews from "@/hooks/useUserReviews";
+import { Slide } from "react-slideshow-image";
 
 const MoviePreview: React.FC<any> = () => {
   const [movieInfo, setMovieInfo] = useState<any>(null);
@@ -44,6 +38,7 @@ const MoviePreview: React.FC<any> = () => {
     setShowReviewModal,
     showShareModal,
     setShowShareModal,
+    // reviews,
   } = useContext(AppContext);
   const [trailers, setTrailers] = useState<any>([]);
   const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
@@ -54,19 +49,7 @@ const MoviePreview: React.FC<any> = () => {
   const [error, setError] = useState<boolean>(false);
   const { movieID, mediaType } = router.query;
 
-  const getUserReviews = async (movieID: string) => {
-    const reviews_: Review[] = [];
-    const collectionRef = collection(firestoreDB, "user_reviews");
-    let q = query(collectionRef, where("movieID", "==", movieID));
-
-    onSnapshot(q, (docsSnap) => {
-      docsSnap.forEach((doc) => {
-        reviews_.push(doc.data() as Review);
-      });
-      console.log("user_reviews", reviews_);
-    });
-    return reviews_;
-  };
+  const { reviews, fetchReviews } = useFetchUserReviews();
 
   const fetchMediaData = async (movieID: string, media_type: string) => {
     setLoading(true);
@@ -75,7 +58,7 @@ const MoviePreview: React.FC<any> = () => {
         setMovieInfo(result?.movieInfo_);
         setMovieCastInfo(result?.movieCast_.cast);
         setLoading(false);
-        setError(result?.error_ as boolean)
+        setError(result?.error_ as boolean);
       })
       .catch((err) => {
         setError(true);
@@ -110,14 +93,7 @@ const MoviePreview: React.FC<any> = () => {
 
       const api_review_data = await api_reviews.json();
       setLoadingReviews(false);
-      setAllReviews((prev) => [
-        ...prev,
-        // ...reviews,
-        ...api_review_data.results,
-      ]);
-
-      // console.log("user_reviews new", user_reviews);
-      console.log("api_reviews_new", api_review_data);
+      setAllReviews(api_review_data.results);
     } catch (error) {
       console.error(error);
       setLoadingReviews(false);
@@ -132,17 +108,13 @@ const MoviePreview: React.FC<any> = () => {
       .then(() => {
         toast.success("Review deleted");
         fetchMovieReviews(movieID as string);
+        fetchReviews();
         toast.dismiss(toastId);
       })
       .catch(() => {
         toast.error("Error occured removing bookmark");
       });
   };
-
-  useEffect(() => {
-    fetchMovieReviews(movieID as string);
-    fetchSimilarMovies(movieID as string);
-  }, [mediaType, movieID]);
 
   useEffect(() => {
     const savedMovies = localStorage.getItem("savedMovies");
@@ -156,14 +128,14 @@ const MoviePreview: React.FC<any> = () => {
         console.error("Error parsing stored data:", error);
       }
     }
-  }, [movieID, mediaType]);
 
-  useEffect(() => {
     if (!movieID || !mediaType) return;
 
     const fetchData = async () => {
+      fetchSimilarMovies(movieID as string);
       fetchMediaData(movieID as string, mediaType as string);
       fetchMovieReviews(movieID as string);
+      fetchReviews();
     };
 
     fetchData();
@@ -202,6 +174,8 @@ const MoviePreview: React.FC<any> = () => {
         console.error("Error parsing stored data:", error);
       }
     }
+    fetchMovieReviews(movieID as string);
+    fetchReviews();
   }, []);
 
   async function handleRemoveButtonClick(movieID: string) {
@@ -283,10 +257,15 @@ const MoviePreview: React.FC<any> = () => {
 
   if (error) {
     return (
-      <div className="flex  h-[90vh] w-full flex-1 flex-col items-center justify-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+        className="flex  h-[90vh] w-full flex-1 flex-col items-center justify-center"
+      >
         <Image src="/error.png" alt="error" width={450} height={450} />
         <p className="text-xl">Error getting movie data</p>{" "}
-      </div>
+      </motion.div>
     );
   }
 
@@ -342,7 +321,7 @@ const MoviePreview: React.FC<any> = () => {
         <div className="flex flex-col items-center justify-between gap-4  py-4 md:flex-row  md:px-6">
           <div className="flex items-center gap-4">
             <div className="flex h-[120px] w-[150px] items-center justify-center border text-3xl font-bold text-brand">
-              {movieInfo.vote_average&&movieInfo.vote_average.toFixed(1)}
+              {movieInfo.vote_average && movieInfo.vote_average.toFixed(1)}
             </div>
             <div className="text-sm md:text-lg">
               <div className="flex gap-2">
@@ -404,7 +383,12 @@ const MoviePreview: React.FC<any> = () => {
           <h2 className="mt-6 mb-2 text-center text-2xl font-semibold text-brand">
             Movie Reviews
           </h2>
-          <div className="mb-10">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="mb-10"
+          >
             {loadingReviews ? (
               <div
                 style={{ background: "rgba(169, 169, 169, 0.2)" }}
@@ -412,9 +396,17 @@ const MoviePreview: React.FC<any> = () => {
               >
                 <p className="text-3xl capitalize">loading reviews...</p>
               </div>
-            ) : allReviews.length > 0 ? (
-              <Slider {...SLIDER_CONFIG} className="gap-20">
-                {allReviews.map((review) => {
+            ) : [
+                ...reviews.filter((review: any) => review.movieID === movieID),
+                ...allReviews,
+              ].length > 0 ? (
+              <Slide slidesToShow={2} autoplay>
+                {[
+                  ...reviews.filter(
+                    (review: any) => review.movieID === movieID,
+                  ),
+                  ...allReviews,
+                ].map((review) => {
                   const { author_details, content, created_at, id, type } =
                     review;
                   return type === "user" ? (
@@ -440,7 +432,7 @@ const MoviePreview: React.FC<any> = () => {
                     />
                   );
                 })}
-              </Slider>
+              </Slide>
             ) : (
               <div
                 style={{ background: "rgba(169, 169, 169, 0.2)" }}
@@ -459,7 +451,7 @@ const MoviePreview: React.FC<any> = () => {
                 </button>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
 
         <section className="">

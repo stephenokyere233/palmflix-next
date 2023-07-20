@@ -4,6 +4,7 @@ import { FC } from "react";
 import { BiUser } from "react-icons/bi";
 import { firebaseAuth } from "@/config/firebase.config";
 import { BiTrashAlt } from "react-icons/bi";
+import { motion } from "framer-motion";
 
 const UserReviewCard: FC<any> = ({
   username,
@@ -16,9 +17,12 @@ const UserReviewCard: FC<any> = ({
   removeReview,
 }) => {
   return (
-    <div
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       onClick={() => console.log(id)}
-      className="rounded-lg p-4 relative my-8  min-[400px]"
+      className="rounded-lg p-4 relative min-[400px] m-4"
       style={{ background: "rgba(169, 169, 169, 0.2)" }}
     >
       <div>
@@ -43,13 +47,11 @@ const UserReviewCard: FC<any> = ({
         dangerouslySetInnerHTML={{ __html: content }}
         className={content.length > 35 ? "max-lines-4 mb-2" : "mb-2"}
       />
-      <span>
-        Rating: {rating}/10
-      </span>
+      <span>Rating: {rating}/10</span>
       <span className="my-2 flex w-full justify-end  text-gray-300">
         {formatDate(created_at)}
       </span>
-    </div>
+    </motion.div>
   );
 };
 
