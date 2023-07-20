@@ -1,10 +1,56 @@
 {
   "hosting": {
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "public": "out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/bookmarks",
+        "destination": "/bookmarks.html"
+      },
+      {
+        "source": "/now_showing",
+        "destination": "/now_showing.html"
+      },
+      {
+        "source": "/coming_soon",
+        "destination": "/coming_soon.html"
+      },
+      {
+        "source": "/preview/**/**",
+        "destination": "/preview/[mediaType]/[movieID].html"
+      },
+      {
+        "source": "/search",
+        "destination": "/search.html"
+      },
+      {
+        "source": "/profile",
+        "destination": "/profile.html"
+      },
+      {
+        "source": "/discover",
+        "destination": "/discover.html"
+      },
+      {
+        "source": "/trending",
+        "destination": "/trending.html"
+      },
+      {
+        "source": "/top_rated",
+        "destination": "/top_rated.html"
+      },
+      {
+        "source": "/tv_shows",
+        "destination": "/tv_shows.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ],
     "frameworksBackend": {
       "region": "us-central1"
