@@ -2,22 +2,19 @@
 import CastCard from "@/components/Cards/CastCard";
 import MovieCard from "@/components/Cards/MovieCard";
 import ReviewCard from "@/components/Cards/ReviewCard";
-import Slider from "react-slick";
 import Loader from "@/components/loader/Loader";
 import ReviewModal from "@/components/modal/review.modal";
 import YouTubePlayer from "@/components/ytplayer";
 import { firebaseAuth, firestoreDB } from "@/config/firebase.config";
-import { SLIDER_CONFIG } from "@/config/slider.config";
 import { img_path } from "@/constants/endpoints";
 import { AppContext } from "@/context";
-import { Review } from "@/interfaces";
 import axios from "axios";
 import { setDoc, doc, deleteDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { BiBookmark, BiShareAlt } from "react-icons/bi";
+import { BiBookmark } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
 import { fetchMovieData } from "@/services/fetchMovies.service";
@@ -37,7 +34,6 @@ const MoviePreview: React.FC<any> = () => {
     showReviewModal,
     setShowReviewModal,
     showShareModal,
-    setShowShareModal,
     // reviews,
   } = useContext(AppContext);
   const [trailers, setTrailers] = useState<any>([]);
