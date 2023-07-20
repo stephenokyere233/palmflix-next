@@ -23,23 +23,20 @@ import {
 } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BiBookmark, BiShareAlt } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
-import { mergeObjects } from "@/utils/mergeObj.util";
+import { fetchMovieData } from "@/services/fetchMovies.service";
+import { motion } from "framer-motion";
 
 const MoviePreview: React.FC<any> = () => {
   const [movieInfo, setMovieInfo] = useState<any>(null);
   const [movieCastInfo, setMovieCastInfo] = useState<any>(null);
-  const [dataType, setDataType] = useState<string>("movie");
   const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(false);
   const router = useRouter();
   const {
-    setSelectedMovieID,
-    selectedMovieID,
     setShowLoginModal,
     savedMovieIDS,
     setSavedMovieIDS,
@@ -52,8 +49,10 @@ const MoviePreview: React.FC<any> = () => {
   const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
   const [showAllCasts, setShowAllCasts] = useState<number>(8);
   const [similarMovies, setSimilarMovies] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [allReviews, setAllReviews] = useState<any[]>([]);
   const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const { movieID, mediaType } = router.query;
 
   const getUserReviews = async (movieID: string) => {
     const reviews_: Review[] = [];
@@ -69,65 +68,23 @@ const MoviePreview: React.FC<any> = () => {
     return reviews_;
   };
 
-  const fetchMovieData = async (movieID: string) => {
-    try {
-      const [movieDataRes, tvDataRes, movieCastRes, tvCastRes] =
-        await Promise.all([
-          fetch(
-            `https://api.themoviedb.org/3/movie/${movieID}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`,
-          ),
-          fetch(
-            `https://api.themoviedb.org/3/tv/${movieID}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`,
-          ),
-          fetch(
-            `https://api.themoviedb.org/3/movie/${movieID}/credits?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`,
-          ),
-          fetch(
-            `https://api.themoviedb.org/3/tv/${movieID}/credits?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`,
-          ),
-        ]);
-
-      if (!movieDataRes.ok && !tvDataRes.ok) {
-        throw new Error("Failed to fetch movie and TV data");
-      }
-      if (!movieCastRes.ok && !tvCastRes.ok) {
-        throw new Error("Failed to fetch movie Cast and TV Cast");
-      }
-
-      const [movieData, tvData, movieCast, tvCast] = await Promise.all([
-        movieDataRes.json(),
-        tvDataRes.json(),
-        movieCastRes.json(),
-        tvCastRes.json(),
-      ]);
-      setMovieInfo(mergeObjects(movieData, tvData));
-      console.log("movieCast", movieCast);
-      console.log("tvCast", tvCast);
-      if (movieCast.cast && movieCast.cast.length > 1) {
-        setMovieCastInfo(movieCast);
-        setDataType("movie");
-      } else if (tvCast.cast && tvCast.cast.length > 1) {
-        console.log("tvCast found");
-        setMovieCastInfo(tvCast);
-        setDataType("tv");
-      } else if (
-        movieCast.cast &&
-        movieCast.cast.length > 1 &&
-        tvCast.cast &&
-        tvCast.cast.length > 1
-      ) {
-        setMovieCastInfo(movieCast);
-        setDataType("movie");
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
+  const fetchMediaData = async (movieID: string, media_type: string) => {
+    setLoading(true);
+    fetchMovieData(movieID, media_type)
+      .then((result) => {
+        setMovieInfo(result?.movieInfo_);
+        setMovieCastInfo(result?.movieCast_.cast);
+        setLoading(false);
+        setError(result?.error_ as boolean)
+      })
+      .catch((err) => {
+        setError(true);
+        console.log(err);
+      });
   };
 
   const fetchSimilarMovies = (movieID: string) => {
+    if (!movieID) return;
     const api_url = `https://api.themoviedb.org/3/movie/${movieID}/similar?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
     axios
       .get(api_url)
@@ -140,14 +97,12 @@ const MoviePreview: React.FC<any> = () => {
   };
 
   const fetchMovieReviews = async (movieID: string) => {
+    if (!movieID) return;
     setLoadingReviews(true);
     try {
       const api_url = `https://api.themoviedb.org/3/movie/${movieID}/reviews?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`;
 
-      const [user_reviews, api_reviews] = await Promise.all([
-        getUserReviews(movieID),
-        fetch(api_url),
-      ]);
+      const api_reviews = await fetch(api_url);
 
       if (!api_reviews.ok) {
         throw new Error("Failed to fetch API reviews");
@@ -155,9 +110,13 @@ const MoviePreview: React.FC<any> = () => {
 
       const api_review_data = await api_reviews.json();
       setLoadingReviews(false);
-      setReviews([...user_reviews, ...api_review_data.results]);
+      setAllReviews((prev) => [
+        ...prev,
+        // ...reviews,
+        ...api_review_data.results,
+      ]);
 
-      console.log("user_reviews new", user_reviews);
+      // console.log("user_reviews new", user_reviews);
       console.log("api_reviews_new", api_review_data);
     } catch (error) {
       console.error(error);
@@ -172,7 +131,7 @@ const MoviePreview: React.FC<any> = () => {
     await deleteDoc(doc(firestoreDB, docRef))
       .then(() => {
         toast.success("Review deleted");
-        fetchMovieReviews(selectedMovieID);
+        fetchMovieReviews(movieID as string);
         toast.dismiss(toastId);
       })
       .catch(() => {
@@ -181,14 +140,12 @@ const MoviePreview: React.FC<any> = () => {
   };
 
   useEffect(() => {
-    fetchMovieReviews(selectedMovieID);
-    fetchSimilarMovies(selectedMovieID);
-  }, [selectedMovieID, showReviewModal]);
+    fetchMovieReviews(movieID as string);
+    fetchSimilarMovies(movieID as string);
+  }, [mediaType, movieID]);
 
   useEffect(() => {
-    // const selectedID = localStorage.getItem("selectedMovieID");
     const savedMovies = localStorage.getItem("savedMovies");
-
     if (savedMovies) {
       try {
         const parsedData = JSON.parse(savedMovies);
@@ -199,47 +156,22 @@ const MoviePreview: React.FC<any> = () => {
         console.error("Error parsing stored data:", error);
       }
     }
-    // if (!selectedMovieID) {
-    //   setSelectedMovieID(selectedID);
-    //   fetchMovieData(selectedID as string);
-    //   console.log("fetching with id from LS")
-    // } else if (!selectedID){
-    //   console.log("no selected id")
-    //   setSelectedMovieID(router.query.movieID)
-    // }
-    //  else {
-    fetchMovieData(selectedMovieID);
-    console.log("id is defined movie fetch works either way");
-    // }
-  }, [selectedMovieID]);
+  }, [movieID, mediaType]);
 
   useEffect(() => {
-    const { movieID } = router.query;
-    console.log("taking movie id from query");
-    setSelectedMovieID(movieID);
-    fetchMovieData(movieID as string);
-    localStorage.setItem("selectedMovieID", movieID?.toString() as string);
-  }, [router]);
-  
-  useEffect(() => {
-    const { movieID } = router.query;
-    console.log("taking movie id from query on initial load");
-    setSelectedMovieID(movieID);
-    fetchMovieData(movieID as string);
-    localStorage.setItem("selectedMovieID", movieID?.toString() as string);
-  }, []);
+    if (!movieID || !mediaType) return;
 
-  // useEffect(() => {
-  //   if (!selectedMovieID) {
-  //     const id = localStorage.getItem("selectedMovieID");
-  //     setSelectedMovieID(id);
-  //     console.log("initial load getting id from LS")
-  //   }
-  // }, []);
+    const fetchData = async () => {
+      fetchMediaData(movieID as string, mediaType as string);
+      fetchMovieReviews(movieID as string);
+    };
+
+    fetchData();
+  }, [movieID, mediaType]);
 
   const fetchTrailer = async (movieID: string) => {
     const api_url = "https://api.themoviedb.org/3";
-    const endpoint = `${api_url}/${dataType}/${movieID}/videos?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`;
+    const endpoint = `${api_url}/${mediaType}/${movieID}/videos?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`;
     try {
       const response = await axios.get(endpoint);
       const filteredTrailers = response.data.results.filter(
@@ -336,18 +268,20 @@ const MoviePreview: React.FC<any> = () => {
     }
   };
 
-  if (loading) {
+  if (loading || movieID === "" || !movieInfo) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center ">
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+        className="flex min-h-screen w-full items-center justify-center "
+      >
         <Loader />
-      </div>
+      </motion.div>
     );
   }
-  // if (!movieInfo) {
-  //   return <></>;
-  // }
 
-  if (!movieInfo) {
+  if (error) {
     return (
       <div className="flex  h-[90vh] w-full flex-1 flex-col items-center justify-center">
         <Image src="/error.png" alt="error" width={450} height={450} />
@@ -373,7 +307,12 @@ const MoviePreview: React.FC<any> = () => {
       )}
       {showReviewModal && <ReviewModal />}
       {showShareModal && <ShareModal />}
-      <div className="mx-auto mb-10 w-screen bg-[#040720] p-4 md:w-[90rem] ">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="mx-auto mb-10 w-screen bg-[#040720] p-4 md:w-[90rem] "
+      >
         <header
           className="relative h-[500px]  w-full rounded-md bg-cover bg-no-repeat"
           style={{
@@ -403,7 +342,7 @@ const MoviePreview: React.FC<any> = () => {
         <div className="flex flex-col items-center justify-between gap-4  py-4 md:flex-row  md:px-6">
           <div className="flex items-center gap-4">
             <div className="flex h-[120px] w-[150px] items-center justify-center border text-3xl font-bold text-brand">
-              {movieInfo.vote_average.toFixed(1)}
+              {movieInfo.vote_average&&movieInfo.vote_average.toFixed(1)}
             </div>
             <div className="text-sm md:text-lg">
               <div className="flex gap-2">
@@ -473,9 +412,9 @@ const MoviePreview: React.FC<any> = () => {
               >
                 <p className="text-3xl capitalize">loading reviews...</p>
               </div>
-            ) : reviews.length > 0 ? (
+            ) : allReviews.length > 0 ? (
               <Slider {...SLIDER_CONFIG} className="gap-20">
-                {reviews.map((review) => {
+                {allReviews.map((review) => {
                   const { author_details, content, created_at, id, type } =
                     review;
                   return type === "user" ? (
@@ -530,28 +469,9 @@ const MoviePreview: React.FC<any> = () => {
           <div className="">
             <div className="grid grid-cols-2 place-items-center gap-4  py-6 lg:grid-cols-4">
               {movieCastInfo &&
-                movieCastInfo.cast
-                  ?.slice(0, showAllCasts)
-                  .map(
-                    (cast: {
-                      name: any;
-                      profile_path: any;
-                      id: any;
-                      character: any;
-                    }) => {
-                      const { name, profile_path, id, character } = cast;
-
-                      return (
-                        <CastCard
-                          key={id}
-                          name={name}
-                          profile={profile_path}
-                          character={character}
-                          id={id}
-                        />
-                      );
-                    },
-                  )}
+                movieCastInfo.cast?.slice(0, showAllCasts).map((cast: any) => {
+                  return <CastCard key={cast.id} castInfo={cast} />;
+                })}
             </div>
             <button
               className=" w-full  rounded-md bg-[#ffffff12] p-3 text-xl"
@@ -578,24 +498,17 @@ const MoviePreview: React.FC<any> = () => {
                 </>
               ) : (
                 similarMovies.map((movie) => {
-                  const { title, name, id, poster_path } = movie;
-                  return (
-                    <MovieCard
-                      key={id}
-                      title={title || name}
-                      imageURL={poster_path}
-                      movieID={id}
-                    />
-                  );
+                  return <MovieCard movieData={movie} key={movie.id} />;
                 })
               )}
             </div>
           </div>
         </section>
-      </div>
+      </motion.div>
     </>
-    // )
   );
+
+  // )
 };
 
 export default MoviePreview;

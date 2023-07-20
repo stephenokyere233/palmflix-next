@@ -65,19 +65,9 @@ const TrendingMovies = () => {
           <p className="text-xl">Error getting movies</p>{" "}
         </div>
       ) : (
-        moviesData.results.map(
-          (movie: { title: any; name: any; id: any; poster_path: any }) => {
-            const { title, name, id, poster_path } = movie;
-            return (
-              <MovieCard
-                key={id}
-                title={title || name}
-                imageURL={poster_path}
-                movieID={id}
-              />
-            );
-          },
-        )
+        moviesData.results.map((movie: any) => {
+          return <MovieCard movieData={movie} key={movie.id} />;
+        })
       )}
     </MoviesLayout>
   );

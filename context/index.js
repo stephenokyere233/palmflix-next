@@ -4,7 +4,6 @@ import { createContext } from "react";
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [selectedMovieID, setSelectedMovieID] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -27,8 +26,6 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        selectedMovieID,
-        setSelectedMovieID,
         showLoginModal,
         setShowLoginModal,
         showSignupModal,

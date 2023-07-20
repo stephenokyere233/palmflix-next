@@ -9,16 +9,13 @@ import { setDoc, doc, deleteDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 type movieProps = {
-  title: string;
-  imageURL: string;
-  movieID: string;
+  movieData: any;
 };
 
-const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
+const MovieCard: React.FC<movieProps> = ({ movieData }) => {
   const router = useRouter();
   const {
     setShowLoginModal,
-    setSelectedMovieID,
     setSavedMovieIDS,
     savedMovieIDS,
     setBookmarkedMovies,
@@ -26,8 +23,11 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
   } = useContext(AppContext);
 
   const handleClick = (id: string) => {
-    router.push(`/preview/${id}`);
-    setSelectedMovieID(id);
+    let media_type = movieData.hasOwnProperty("first_air_date")
+      ? "tv"
+      : "movie";
+
+    router.push(`/preview/${media_type}/${id}`);
     localStorage.setItem("selectedMovieID", id);
   };
 
@@ -70,29 +70,33 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
       setShowLoginModal(true);
     } else {
       console.log(firebaseAuth.currentUser?.uid);
-      console.log(movieID);
+      console.log(movieData.id);
+      let media_type = movieData.hasOwnProperty("first_air_date")
+        ? "tv"
+        : "movie";
 
       const movieToSave = {
-        title: title,
-        id: movieID,
+        title: movieData.title || movieData.name,
+        id: movieData.id,
         uid: firebaseAuth.currentUser.uid,
-        backdrop_path: imageURL,
-        poster_path: imageURL,
-        description: "",
+        backdrop_path: movieData.backdrop_path || movieData.poster_path,
+        poster_path: movieData.poster_path || movieData.backdrop_path,
+        description: movieData.overview,
+        media_type: media_type,
       };
-      let docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieID}`;
+      let docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieData.id}`;
 
       const LSMovies = localStorage.getItem("savedMovies") || "";
 
-      if (LSMovies.includes(movieID)) {
-        handleRemoveButtonClick(movieID);
+      if (LSMovies.includes(movieData.id)) {
+        handleRemoveButtonClick(movieData.id);
       } else {
         const toastId = toast.loading("Loading...");
         await setDoc(doc(firestoreDB, docRef), movieToSave)
           .then(() => {
             toast.success("Added to bookmarks");
             toast.dismiss(toastId);
-            savedArray.push(movieID);
+            savedArray.push(movieData.id);
             setSavedMovieIDS(savedArray);
           })
           .catch(() => {
@@ -112,7 +116,7 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     if (!(event.target instanceof SVGElement)) {
-      handleClick(movieID);
+      handleClick(movieData.id);
     } else {
       handleBookmarkClick();
     }
@@ -126,15 +130,21 @@ const MovieCard: React.FC<movieProps> = ({ title, imageURL, movieID }) => {
         onClick={handleCardClick}
       >
         <Image
-          src={imageURL ? img_path + imageURL : "/no_preview.jpg"}
-          alt={title}
+          src={
+            movieData.poster_path
+              ? img_path + movieData.poster_path
+              : "/no_preview.jpg"
+          }
+          alt={movieData.title || movieData.name}
           width={300}
           height={300}
           className="h-[85%] object-cover rounded-md  bg-gray-400"
         />
         <div className="flex justify-between p-2 items-center">
-          <p className="w-[90%] max-lines-2">{title}</p>
-          {savedMovieIDS.includes(movieID) ? (
+          <p className="w-[90%] max-lines-2">
+            {movieData.title || movieData.name}
+          </p>
+          {savedMovieIDS.includes(movieData.id) ? (
             <BiBookmarkHeart size={28} className="text-green-400" />
           ) : (
             <BiBookmark size={28} />

@@ -6,15 +6,20 @@ import { toast } from "react-hot-toast";
 import ModalLayout from "../layout/ModalLayout";
 import { BiX } from "react-icons/bi";
 import { setDoc, doc } from "firebase/firestore";
+import { useRouter } from "next/router";
 
 const ReviewModal = () => {
+  const router = useRouter();
   const [comment, setComment] = React.useState<string>("");
+
   const [loading, setLoading] = React.useState<boolean>(false);
   const [rating, setRating] = React.useState<string>("");
+  const { movieID } = router.query;
 
-  const { selectedMovieID, setShowReviewModal } = useContext(AppContext);
+  const { setShowReviewModal } = useContext(AppContext);
 
   const addReview = async (movieID: string) => {
+    if (!movieID) return;
     if (comment === "") {
       toast.error("fill the form");
       return;
@@ -33,20 +38,20 @@ const ReviewModal = () => {
     };
 
     let docRef = `user_reviews/${newReview.id}`;
-    console.log("newReview", newReview);
-
+    setLoading(true);
     const toastId = toast.loading("Loading...");
     await setDoc(doc(firestoreDB, docRef), newReview)
       .then(() => {
         toast.success("Added new review");
         toast.dismiss(toastId);
+        setLoading(false);
         setShowReviewModal(false);
       })
       .catch(() => {
+        toast.dismiss(toastId);
         toast.error("Error occured adding bookmark");
+        setLoading(false);
       });
-    console.log("add review");
-    console.log("id", selectedMovieID);
   };
 
   return (
@@ -64,6 +69,9 @@ const ReviewModal = () => {
             name="rating"
             value={rating}
             maxLength={2}
+            type="text"
+            max={10}
+            min={0}
             placeholder="Rate this movie out of 10"
             className="rounded-md border bg-transparent p-2 outline-none"
             onChange={(event) => {
@@ -86,7 +94,7 @@ const ReviewModal = () => {
         <button
           style={{ background: "rgba(169, 169, 169, 0.2)" }}
           className="flex w-full items-center justify-center gap-2 rounded-md  p-2 text-center"
-          onClick={() => addReview(selectedMovieID)}
+          onClick={() => addReview(movieID as string)}
         >
           {loading ? "Loading..." : "Submit Review"}
         </button>

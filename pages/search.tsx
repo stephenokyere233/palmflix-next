@@ -22,6 +22,7 @@ const SearchResults = () => {
     setCurrentPage(currentPage - 1);
   };
 
+  console.log(searchResults)
   useEffect(() => {
     if (searchQuery === "") {
       router.replace("/search?query=");
@@ -36,19 +37,9 @@ const SearchResults = () => {
     >
       {searchResults &&
         (searchResults.results?.length > 1 ? (
-          searchResults?.results.map(
-            (movie: { title: any; name: any; id: any; poster_path: any }) => {
-              const { title, name, id, poster_path } = movie;
-              return (
-                <MovieCard
-                  key={id}
-                  title={title || name}
-                  imageURL={poster_path}
-                  movieID={id}
-                />
-              );
-            },
-          )
+          searchResults?.results.map((movie: any) => {
+            return <MovieCard movieData={movie} key={movie.id} />;
+          })
         ) : (
           <div className="flex w-full items-center justify-center flex-col">
             <Image src="/error.png" alt="error" width={450} height={450} />

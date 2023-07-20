@@ -47,20 +47,25 @@ const ComingMovies = () => {
         getMovies(upcoming_movies, currentPage)
     }, [currentPage])
     return (
-        <MoviesLayout actionNext={goToNextPage} actionPrev={goToPrevPage} title="Upcoming Movies">
-            {
-                loading ? <Loader /> : (
-                    !moviesData ? <div className='flex items-center justify-center flex-col'><Image src="/error.png" alt="error" width={450} height={450} /><p className='text-xl'>Error getting movies</p> </div> : moviesData.results.map((movie: { title: any; name: any; id: any; poster_path: any; }) => {
-                        const { title, name, id, poster_path } = movie
-                        return (
-                            <MovieCard key={id} title={title || name} imageURL={poster_path} movieID={id} />
-                        )
-                    })
-                )
-
-            }
-        </MoviesLayout>
-    )
+      <MoviesLayout
+        actionNext={goToNextPage}
+        actionPrev={goToPrevPage}
+        title="Upcoming Movies"
+      >
+        {loading ? (
+          <Loader />
+        ) : !moviesData ? (
+          <div className="flex items-center justify-center flex-col">
+            <Image src="/error.png" alt="error" width={450} height={450} />
+            <p className="text-xl">Error getting movies</p>{" "}
+          </div>
+        ) : (
+          moviesData.results.map((movie:any) => {
+            return <MovieCard movieData={movie} key={movie.id} />;
+          })
+        )}
+      </MoviesLayout>
+    );
 }
 
 export default ComingMovies
