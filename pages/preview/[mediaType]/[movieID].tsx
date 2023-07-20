@@ -367,11 +367,11 @@ const MoviePreview: React.FC<any> = () => {
                 <BiBookmark size={24} />
               </div>
             )}
-            <BiShareAlt
+            {/* <BiShareAlt
               size={28}
               className="cursor-pointer"
               onClick={() => setShowShareModal(true)}
-            />
+            /> */}
           </div>
         </div>
         <div className="flex flex-col gap-4 py-6 md:flex-row md:px-10">
