@@ -26,16 +26,15 @@ import DeleteModal from "@/components/modal/delete.modal";
 const Profile = () => {
   const router = useRouter();
   const [updateForm, setUpdateForm] = React.useState<{
-    profile: string | null;
     name: string;
     email: string;
+    profile:string|null
   }>({
-    profile: "",
     name: "",
     email: "",
+    profile:""
   });
 
-  const [file, setFile] = React.useState<any>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -46,7 +45,6 @@ const Profile = () => {
       ...prev,
       name: authenticatedUser?.displayName || "",
       email: authenticatedUser?.email,
-      profile: authenticatedUser?.photoURL || "",
     }));
   }, [authenticatedUser]);
 
@@ -61,39 +59,22 @@ const Profile = () => {
 
   const updateUserData = () => {
     if (!firebaseAuth.currentUser) return;
-
-    if (file) {
-      const storageRef = ref(cloudStorage, `${name}.jpg`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on("state_changed", () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          if (!firebaseAuth.currentUser) return;
-          await updateProfile(firebaseAuth.currentUser, {
-            displayName: updateForm.name,
-            photoURL: downloadURL,
-          })
-            .then(() => {
-              toast.success("profile updated");
-              setLoading(false);
-            })
-            .catch((error) => {
-              setLoading(false);
-              toast.error("profile cant updated");
-            });
-        });
-      });
-    } else {
-      updateProfile(firebaseAuth.currentUser, {
-        displayName: updateForm.name,
+    setLoading(true);
+    const toastID = toast.loading("Updating your profile");
+    updateProfile(firebaseAuth.currentUser, {
+      displayName: updateForm.name,
+    })
+      .then(() => {
+        toast.dismiss(toastID);
+        setLoading(false);
+        toast.success("Profile updated");
       })
-        .then(() => {
-          toast.success("profile updated");
-        })
-        .catch((error) => {
-          toast.error(" cant update profile");
-        });
-    }
+      .catch((error) => {
+        toast.dismiss(toastID);
+        setLoading(false);
+
+        toast.error("Can't update profile");
+      });
   };
 
   async function handleSubmit(event: FormEvent) {
@@ -166,15 +147,6 @@ const Profile = () => {
         />
 
         <form className="flex flex-col gap-4 w-[90%]" onSubmit={handleSubmit}>
-          <NRInput
-            title="Avatar"
-            name="profile"
-            type="file"
-            onChange={(e) => {
-              e.target.files && setFile(e.target.files[0]);
-            }}
-            isRequired={false}
-          />
           <NRInput
             title="Name"
             name="name"
