@@ -45,6 +45,7 @@ const Profile = () => {
       ...prev,
       name: authenticatedUser?.displayName || "",
       email: authenticatedUser?.email,
+      profile:authenticatedUser?.photoURL||"",
     }));
   }, [authenticatedUser]);
 
