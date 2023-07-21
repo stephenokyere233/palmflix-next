@@ -37,7 +37,7 @@ const SignUpModal = () => {
             toast.error("couldn't add user details");
           });
       } catch (error: any) {
-        console.log(error);
+        console.error(error);
         toast.error(`${error.message}`);
         setLoading(false);
       }

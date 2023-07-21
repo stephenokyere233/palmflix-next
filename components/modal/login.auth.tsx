@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AppContext } from "@/context";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { FcGoogle } from "react-icons/fc";
 import {
   GoogleAuthProvider,
@@ -54,7 +54,7 @@ const LoginModal = () => {
         } else {
           toast.error(error.message);
         }
-        console.log(error.message);
+        console.error(error.message);
       });
   };
 
@@ -82,7 +82,7 @@ const LoginModal = () => {
           } else {
             toast.error(error.message);
           }
-          console.log(error.message);
+          console.error(error.message);
           setLoading(false);
         });
     } else {
@@ -150,7 +150,6 @@ const LoginModal = () => {
             className="cursor-pointer"
             onClick={() => {
               setShowResetModal(true);
-              console.log("hello");
             }}
           >
             Forgot Password? Reset Here

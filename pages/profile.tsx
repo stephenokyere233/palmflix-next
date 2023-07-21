@@ -68,7 +68,6 @@ const Profile = () => {
 
       uploadTask.on("state_changed", () => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          console.log("File available at", downloadURL);
           if (!firebaseAuth.currentUser) return;
           await updateProfile(firebaseAuth.currentUser, {
             displayName: updateForm.name,
@@ -100,7 +99,6 @@ const Profile = () => {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     updateUserData();
-    console.log(updateForm);
   }
 
   async function deleteAccount() {
@@ -119,14 +117,14 @@ const Profile = () => {
           .catch((err) => {
             toast.error("something went wrong");
             toast.dismiss(toastID);
-            console.log("err", err);
+            console.error("error removing account", err);
           });
         // User deleted.
       })
       .catch((error) => {
         toast.error("something went wrong");
         toast.dismiss(toastID);
-        console.log("error", error);
+        console.error("disable account", error);
       });
   }
 

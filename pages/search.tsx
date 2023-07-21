@@ -22,7 +22,6 @@ const SearchResults = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  console.log(searchResults)
   useEffect(() => {
     if (searchQuery === "") {
       router.replace("/search?query=");

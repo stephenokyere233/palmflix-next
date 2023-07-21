@@ -2,12 +2,24 @@
 import { AppContext } from "@/context";
 import React, { useContext } from "react";
 import ModalLayout from "../layout/ModalLayout";
-import { BiX ,BiCopy} from "react-icons/bi";
+import { BiX, BiCopy } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 const ShareModal = () => {
-  const [url, setUrl] = React.useState<string>(window.location.href);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const {  setShowShareModal } = useContext(AppContext);
+  const [url] = React.useState<string>(window.location.href);
+  const { setShowShareModal } = useContext(AppContext);
+
+  function copyToClipboard(text: string) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast.success("Copied to clipboard");
+        setShowShareModal(false);
+      })
+      .catch((error) => {
+        toast.error("failed to copy");
+      });
+  }
 
   return (
     <ModalLayout onHideModal={() => setShowShareModal(false)}>
@@ -30,19 +42,13 @@ const ShareModal = () => {
             <p
               style={{ background: "rgba(169, 169, 169, 0.2)" }}
               className="flex gap-2 cursor-pointer p-2 rounded-md"
+              onClick={() => copyToClipboard(url)}
             >
               <span>Copy</span>
               <BiCopy size={24} />
             </p>
           </div>
         </div>
-
-        <button
-          style={{ background: "rgba(169, 169, 169, 0.2)" }}
-          className="flex w-full items-center justify-center gap-2 rounded-md  p-2 text-center"
-        >
-          {loading ? "Loading..." : "Submit Review"}
-        </button>
       </section>
     </ModalLayout>
   );

@@ -38,7 +38,6 @@ const MovieCard: React.FC<movieProps> = ({ movieData }) => {
       return arr.filter((obj: { id: any }) => obj.id !== id);
     }
     if (!firebaseAuth.currentUser?.uid) {
-      console.log("login to save a movie");
       setShowLoginModal(true);
     } else {
       const docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieID}`;
@@ -66,11 +65,8 @@ const MovieCard: React.FC<movieProps> = ({ movieData }) => {
   const addToBookmark = async () => {
     let savedArray = [...savedMovieIDS];
     if (!firebaseAuth.currentUser?.uid) {
-      console.log("login to save a movie");
       setShowLoginModal(true);
     } else {
-      console.log(firebaseAuth.currentUser?.uid);
-      console.log(movieData.id);
       let media_type = movieData.hasOwnProperty("first_air_date")
         ? "tv"
         : "movie";
@@ -108,7 +104,6 @@ const MovieCard: React.FC<movieProps> = ({ movieData }) => {
   };
 
   const handleBookmarkClick = () => {
-    console.log("Bookmark clicked");
     addToBookmark();
   };
 

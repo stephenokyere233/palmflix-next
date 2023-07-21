@@ -147,8 +147,7 @@ const Home = () => {
               <MovieSliderLayout
                 title="tv shows"
                 movieArray={tvShows}
-                link="
-                        tv_shows"
+                link="tv_shows"
               />
             </main>
             <Footer />

@@ -23,7 +23,6 @@ export async function onAuthenticationSuccess(
     setDoc(doc(firestoreDB, `users/${firebaseUser.uid}`), newUser)
       .then(async (result) => {
         toast.success("Signed up successfully");
-        console.log(result);
       })
       .catch((error) => toast.error("Couldn't add user"));
   } else toast.success("Welcome");

@@ -35,7 +35,6 @@ const ComingMovies = () => {
     const goToNextPage = () => {
         if (currentPage <= totalPages) {
             setCurrentPage(prev => prev + 1)
-            console.log("met")
         }
     }
     const goToPrevPage = () => {

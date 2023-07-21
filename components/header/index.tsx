@@ -27,12 +27,10 @@ const Header = () => {
     setLoading(true)
     try {
       const response = await axios.get(`https://api.themoviedb.org/3/search/multi?api_key=49aadc9bda210df9f0d47e374c404fd5&query=${query}&page=1`);
-      console.log(response.data);
       setSearchResults(response.data)
       setLoading(false)
       router.push(`/search?query=${searchQuery}`)
     } catch (error) {
-      console.log(error);
       toast.error("erroring getting data")
       setLoading(false)
 
@@ -42,7 +40,6 @@ const Header = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     handleSearch(searchQuery)
-    console.log(searchQuery)
   }
 
 
@@ -55,7 +52,7 @@ const Header = () => {
     onAuthStateChanged(firebaseAuth, (user) => {
       if (user && user.email) {
         setAuthenticatedUser(user)
-      } else console.log("logged out")
+      } else console.warn("logged out")
     })
   }
 

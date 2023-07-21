@@ -1,13 +1,8 @@
-import { FaBars, FaFire, FaHome, FaSearch, FaTv } from "react-icons/fa"
-import { BiMovie } from "react-icons/bi"
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { discover_movies } from "@/constants/endpoints";
 import Loader from "@/components/loader/Loader";
 import MovieCard from "@/components/Cards/MovieCard";
-import { TABS } from "@/constants/TABS"
-import Link from "next/link";
 import MoviesLayout from "@/components/layout/MoviesLayout";
 import Image from "next/image";
 
@@ -39,7 +34,6 @@ export default function Home() {
   const goToNextPage = () => {
     if (currentPage <= totalPages) {
       setCurrentPage(prev => prev + 1)
-      console.log("met")
     }
   }
   const goToPrevPage = () => {

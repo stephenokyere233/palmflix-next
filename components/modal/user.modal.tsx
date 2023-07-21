@@ -30,7 +30,7 @@ const UserDropDown = () => {
         toast.success("Logged out Successfully");
       })
       .catch((error) => {
-        console.log(error);
+        console.error("signout",error);
       });
   };
   return (

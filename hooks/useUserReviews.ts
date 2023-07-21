@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { firestoreDB } from "@/config/firebase.config";
 import { AppContext } from "@/context";
@@ -13,15 +13,10 @@ const useFetchUserReviews = () => {
       const docsSnap = await getDocs(collectionRef);
       docsSnap.docs.forEach((doc) => reviews_.push(doc.data()));
       setReviews(reviews_);
-      console.log("reviews_", reviews_);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
-
-  // useEffect(() => {
-  //   fetchReviews();
-  // }, []);
 
   return { reviews, fetchReviews };
 };

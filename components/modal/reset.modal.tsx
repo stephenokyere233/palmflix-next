@@ -11,7 +11,6 @@ const PasswordReset: FC<{ closeModal: () => void }> = ({ closeModal }) => {
 
   const resetPassword = () => {
     if (!email) {
-      console.log("enter email");
       toast.error("enter email");
       return;
     }

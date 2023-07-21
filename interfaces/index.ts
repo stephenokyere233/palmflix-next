@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export interface IUser {
   dateRegistered: string;
   id: string;
@@ -17,7 +19,23 @@ export interface IReview {
   id:string;
 }
 
-
+export interface NRInputProps  {
+  title: string;
+  type: string;
+  autoComplete?: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  value?: string | number | readonly string[] | undefined;
+  name: string;
+  maxLength?: number;
+  placeholder?: string;
+  width?: string;
+  min?: number;
+  max?: number;
+  className?: string;
+  styles?: string;
+  isRequired: boolean;
+  isDisabled?: boolean;
+};
 export interface Review {
   username: string;
   created_at: string;

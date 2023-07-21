@@ -21,7 +21,6 @@ const UserReviewCard: FC<any> = ({
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      onClick={() => console.log(id)}
       className="rounded-lg p-4 relative min-[400px] m-4"
       style={{ background: "rgba(169, 169, 169, 0.2)" }}
     >

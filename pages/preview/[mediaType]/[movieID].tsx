@@ -14,7 +14,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { BiBookmark } from "react-icons/bi";
+import { BiBookmark,BiShareAlt } from "react-icons/bi";
 import ShareModal from "@/components/modal/share.modal";
 import MovieMeta from "@/components/Meta/MovieMeta";
 import { fetchMovieData } from "@/services/fetchMovies.service";
@@ -34,7 +34,7 @@ const MoviePreview: React.FC<any> = () => {
     showReviewModal,
     setShowReviewModal,
     showShareModal,
-    // reviews,
+    setShowShareModal,
   } = useContext(AppContext);
   const [trailers, setTrailers] = useState<any>([]);
   const [showPlayer, setShowPlayer] = React.useState<boolean>(false);
@@ -58,7 +58,7 @@ const MoviePreview: React.FC<any> = () => {
       })
       .catch((err) => {
         setError(true);
-        console.log(err);
+        console.error("fetching movie media",err);
       });
   };
 
@@ -162,7 +162,6 @@ const MoviePreview: React.FC<any> = () => {
     if (savedMovies) {
       try {
         const parsedData = JSON.parse(savedMovies);
-        console.log("parsedData", parsedData);
         if (Array.isArray(parsedData)) {
           setSavedMovieIDS(parsedData);
         }
@@ -176,16 +175,11 @@ const MoviePreview: React.FC<any> = () => {
 
   async function handleRemoveButtonClick(movieID: string) {
     let savedArray = [...savedMovieIDS];
-    console.log("saved", savedArray);
     if (!firebaseAuth.currentUser?.uid) {
-      console.log("login to save a movie");
       setShowLoginModal(true);
     } else {
-      console.log(firebaseAuth.currentUser?.uid);
-      console.log(movieID);
       const docRef = `user_bookmarks/${firebaseAuth.currentUser.uid}/saved_bookmarks/${movieID}`;
       const index = savedArray.indexOf(movieID);
-      console.log(index);
       if (index > -1) {
         const toastId = toast.loading("Loading...");
         await deleteDoc(doc(firestoreDB, docRef))
@@ -281,7 +275,7 @@ const MoviePreview: React.FC<any> = () => {
         />
       )}
       {showReviewModal && <ReviewModal />}
-      {showShareModal && <ShareModal />}
+      {showShareModal && <ShareModal/>}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -363,11 +357,11 @@ const MoviePreview: React.FC<any> = () => {
                 <BiBookmark size={24} />
               </div>
             )}
-            {/* <BiShareAlt
+            <BiShareAlt
               size={28}
               className="cursor-pointer"
               onClick={() => setShowShareModal(true)}
-            /> */}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-4 py-6 md:flex-row md:px-10">
@@ -456,10 +450,18 @@ const MoviePreview: React.FC<any> = () => {
           </h2>
           <div className="">
             <div className="grid grid-cols-2 place-items-center gap-4  py-6 lg:grid-cols-4">
-              {movieCastInfo &&
-                movieCastInfo.cast?.slice(0, showAllCasts).map((cast: any) => {
-                  return <CastCard key={cast.id} castInfo={cast} />;
-                })}
+              {movieCastInfo.length>0 ?
+                (movieCastInfo.slice(0, showAllCasts).map((cast: any) => {
+                  return <CastCard key={cast.id} castInfo={cast} />
+                })):<>
+                <div
+                style={{ background: "rgba(169, 169, 169, 0.2)" }}
+                className="flex items-center p-10 rounded-md h-[300px] gap-4 flex-col justify-center text-2xl"
+              >
+                <p className="text-3xl capitalize">No Known Casts</p>
+                
+              </div>
+                </>}
             </div>
             <button
               className=" w-full  rounded-md bg-[#ffffff12] p-3 text-xl"
